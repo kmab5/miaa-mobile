@@ -1,6 +1,6 @@
-# Admin daily operations — v0.6.0
+# Admin workflows — v0.7.0
 
-The Admin app remains a separately installed app. Its protected `admin/[screen]` allowlist now exposes daily operations, people, catalog/prices, subscriptions, pending payments, support, organization settings and their detail/review forms. Legacy module links redirect to these workflows. The existing finance/reports overview remains for Round 7; no finance, stock, archive, analytics or payout actions are falsely presented as implemented.
+The Admin app remains a separately installed app. Its protected `admin/[screen]` allowlist now exposes daily operations, people, catalog/prices, subscriptions, pending payments, support, organization settings and their detail/review forms. Legacy module links redirect to these workflows. Round 7 adds finance, payouts, stock, analytics and archive/restoration; see [ADMIN_FINANCE.md](ADMIN_FINANCE.md) for contracts and financial distinctions. Legacy reports now opens the implemented reports hub.
 
 ## Existing API coverage
 
@@ -31,7 +31,7 @@ Admin delivery actions are explicitly reviewed corrections, including packaging 
 
 People forms use named choices and backend IDs, normalize Ethiopian phones, accept zero coordinates and enforce numeric/money/date/text bounds. Staff status changes and password resets have their own explanations. The server may refuse deactivation/reassignment when work is in flight. Client profiles with missing legacy coordinates require a real location before an address update. Staff accounts are provisioned by an Admin; no staff signup or Client password-reset endpoint is invented.
 
-Mother inspections update the backend's latest inspection date/notes. Mother package prices are upserted with POST, including explicit active flags. Catalog prices never reprice existing subscriptions. Soft deletion, recycle-bin restoration and financial history remain Round 7; Round 6 does not hard-delete records or logs.
+Mother inspections update the backend's latest inspection date/notes. Mother package prices are upserted with POST, including explicit active flags. Catalog prices never reprice existing subscriptions. Round 7 adds reviewed soft deletion and restoration from these live views. Historical rows remain stored; there is no hard-delete action.
 
 ## Orders, payments and requests
 

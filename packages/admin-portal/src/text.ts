@@ -1,5 +1,7 @@
+import { businessEn, businessAm } from './business-text';
 import { useTranslation } from '@miaa/i18n';
 export const en = {
+  ...businessEn,
   home: 'Run the lunch service',
   workspace: 'Admin workspace',
   daily: 'Daily operations',
@@ -246,6 +248,7 @@ export const en = {
 } as const;
 export type Key = keyof typeof en;
 export const am: Record<Key, string> = {
+  ...businessAm,
   ...en,
   home: 'የምሳ አገልግሎትን ያስተዳድሩ',
   workspace: 'የአስተዳዳሪ የሥራ ቦታ',

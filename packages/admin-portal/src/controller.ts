@@ -1,6 +1,7 @@
 import { MobileApiError, type RequestOptions } from '@miaa/api';
 import {
   bool,
+  money,
   count,
   fault,
   id,
@@ -17,6 +18,7 @@ import {
   type Row,
 } from './contracts';
 import { action, guardData, isForm, validateAction, type Action } from './forms';
+import { decimal, financeEntry, quantity, stockItem, stockMovement } from './business-contracts';
 export interface ActionStore {
   read(): Promise<string | null>;
   write(v: string): Promise<void>;
@@ -82,6 +84,90 @@ function receipt(a: Action, v: unknown): Row {
   const x = object(v);
   const target = Number(a.path.split('/')[1]);
   const kind = a.form;
+  const cents = (v: unknown) => {
+    const [w, f = ''] = money(v).split('.');
+    return BigInt(w!) * 100n + BigInt(f.padEnd(2, '0'));
+  };
+  if (kind === 'archiveRecord' || kind === 'restoreRecord') {
+    if (x.ok !== true) fault();
+    return { id: id(Number(a.path.split('/')[2])), ok: true };
+  }
+  if (kind === 'financeEntry' || kind === 'payout') {
+    const entry = financeEntry(v);
+    if (cents(entry.amountEtb) !== cents(a.body?.amountEtb)) fault();
+    if (entry.occurredOn !== a.body?.occurredOn) fault();
+    if (kind === 'financeEntry')
+      for (const key of [
+        'description',
+        'counterparty',
+        'method',
+        'reference',
+        'receiptUrl',
+        'relatedMotherId',
+        'relatedCyclistId',
+      ])
+        if (a.body?.[key] !== undefined && entry[key] !== a.body[key]) fault();
+    if (
+      kind === 'financeEntry' &&
+      (entry.category !== a.body?.category || entry.direction !== a.body?.direction)
+    )
+      fault();
+    if (
+      kind === 'payout' &&
+      (entry.category !== `${a.body?.kind}_payout` ||
+        entry.direction !== 'expense' ||
+        entry[a.body?.kind === 'mother' ? 'relatedMotherId' : 'relatedCyclistId'] !==
+          a.body?.personId)
+    )
+      fault();
+    return { id: entry.id!, amountEtb: entry.amountEtb!, occurredOn: entry.occurredOn! };
+  }
+  if (kind === 'stockItem') {
+    const item = stockItem(v);
+    if (
+      (a.method === 'PATCH' && item.id !== target) ||
+      item.nameEn !== a.body?.nameEn ||
+      item.nameAm !== a.body?.nameAm ||
+      item.unit !== a.body?.unit ||
+      item.active !== a.body?.active
+    )
+      fault();
+    return { id: item.id!, currentQuantity: item.currentQuantity!, unit: item.unit! };
+  }
+  if (kind === 'stockMovement') {
+    const movement = stockMovement(x.movement);
+    if (
+      movement.stockItemId !== a.body?.stockItemId ||
+      movement.movementType !== a.body?.movementType ||
+      movement.occurredOn !== a.body?.occurredOn
+    )
+      fault();
+    const signed = ['consumption', 'waste'].includes(String(a.body?.movementType))
+      ? '-' + String(a.body?.quantity)
+      : String(a.body?.quantity);
+    const scale = (v: string) => {
+      const [w, f = ''] = v.replace('-', '').split('.');
+      return (BigInt(w!) * 1000n + BigInt(f.padEnd(3, '0'))) * (v.startsWith('-') ? -1n : 1n);
+    };
+    if (scale(quantity(movement.quantity)) !== scale(quantity(signed))) fault();
+    if (
+      a.body?.unitCostEtb !== undefined &&
+      (movement.unitCostEtb === null || cents(movement.unitCostEtb) !== cents(a.body.unitCostEtb))
+    )
+      fault();
+    const linked = x.financeEntryId === null ? null : id(x.financeEntryId);
+    if (
+      (a.body?.createExpense === true) !== (linked !== null) ||
+      movement.relatedFinanceEntryId !== linked
+    )
+      fault();
+    return {
+      id: movement.id!,
+      newQuantity: quantity(x.newQuantity),
+      financeEntryId: linked,
+      totalCostEtb: x.totalCostEtb === null ? null : decimal(x.totalCostEtb),
+    };
+  }
   if (kind === 'order') {
     const s = subscription(x.subscription);
     if (s.clientId !== a.body?.clientId || s.motherOfferingId !== a.body?.motherOfferingId) fault();
@@ -376,7 +462,10 @@ export function createAdminController(options: {
           if (a.guard) {
             const current = await load(a.guard.path);
             if (!current) fault('refresh_required');
-            if (JSON.stringify(guardData(current, a.guard.identity)) !== a.guard.fingerprint)
+            if (
+              JSON.stringify(guardData(current, a.guard.identity, a.guard.key)) !==
+              a.guard.fingerprint
+            )
               fault('state_changed');
           }
           const j: Journal = {

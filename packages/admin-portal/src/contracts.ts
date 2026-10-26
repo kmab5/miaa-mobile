@@ -1,4 +1,5 @@
 import { MobileApiError } from '@miaa/api';
+import { businessPath, parseBusinessRead } from './business-contracts';
 export type Value = string | number | boolean | null | Value[] | { [key: string]: Value };
 export type Row = { [key: string]: Value };
 export type Data = Row | Row[];
@@ -51,21 +52,20 @@ export function money(v: unknown) {
   if (!/^\d{1,9}(\.\d{1,2})?$/.test(s)) return fault();
   return s;
 }
-const enumeration =
-  (values: string[]) =>
-  (v: unknown): string => {
+export function enumeration(values: string[]) {
+  return (v: unknown): string => {
     const s = text(v);
     if (!values.includes(s)) return fault();
     return s;
   };
+}
 export const statuses = ['preparing', 'packaged', 'out_for_delivery', 'delivered', 'cancelled'];
 export const status = enumeration(statuses),
   orderStatus = enumeration(['pending_payment', 'active', 'cancelled', 'completed']);
-const nullable =
-  (parse: (v: unknown) => Value) =>
-  (v: unknown): Value =>
-    v === null ? null : parse(v);
-const instant = (v: unknown) => {
+export function nullable(parse: (v: unknown) => Value) {
+  return (v: unknown): Value => (v === null ? null : parse(v));
+}
+export const instant = (v: unknown) => {
   const s = text(v);
   if (!/^\d{4}-\d\d-\d\dT/.test(s) || !Number.isFinite(Date.parse(s))) return fault();
   return s;
@@ -76,7 +76,7 @@ const locale = enumeration(['en', 'am']),
   duration = enumeration(['demo', 'weekly', 'monthly', 'three_month']),
   paymentStatus = enumeration(['pending', 'confirmed', 'failed']);
 type Parser = (v: unknown) => Value;
-function shape(v: unknown, fields: Record<string, Parser>): Row {
+export function shape(v: unknown, fields: Record<string, Parser>): Row {
   const x = object(v);
   const out: Row = {};
   for (const [key, parse] of Object.entries(fields)) out[key] = parse(x[key]);
@@ -278,6 +278,7 @@ export function settings(v: unknown) {
   });
 }
 export function safePath(path: string): string {
+  if (businessPath(path)) return path;
   if (
     !/^(?:day|prep-sheets|run-sheets|labels)(?:\?date=\d{4}-\d\d-\d\d)$/.test(path) &&
     !/^(?:reassign-options|settings|payments\/pending|mothers(?:\/[1-9]\d*(?:\/offerings)?)?|cyclists(?:\/[1-9]\d*)?|clients(?:\/[1-9]\d*)?|orders(?:\/[1-9]\d*)?|dishes|packages|tickets)(?:\?(?:includeInactive=(?:true|false)|search=[^#]*|status=(?:active|pending_payment|cancelled|completed|open|resolved)))?$/.test(
@@ -289,6 +290,7 @@ export function safePath(path: string): string {
 }
 export function parseRead(path: string, v: unknown): Data {
   safePath(path);
+  if (businessPath(path)) return parseBusinessRead(path, v);
   const key = path.split('?')[0]!;
   const expected = new URLSearchParams(path.split('?')[1]).get('date');
   if (key === 'day') return board(v, date(expected));
@@ -416,7 +418,7 @@ export type Journal = {
   token: string;
   form: string;
   path: string;
-  method: 'POST' | 'PATCH';
+  method: 'POST' | 'PATCH' | 'DELETE';
   startedAt: string;
   body?: Row;
   key?: string;

@@ -13,7 +13,7 @@ Four separate apps share one API, design system and translation layer. Android i
 | 7     | Admin finance, payouts, stock, analytics, archive and restoration                                                      | Correct backend-derived reports and preserved history                                    |
 | 8     | Full cross-app verification, poor connections, accessibility, release signing/versioning and acceptance                | Reproducible release builds and verified device workflows                                |
 
-Rounds 1–6 are implemented. Password/Telegram sign-in, verified Client signup, secure sessions and account security work against the existing API contract. Client, Mother, Cyclist and Admin daily workflows are active; Admin finance, stock, analytics and archive remain for Round 7; no sample customer records, invented totals or simulated successful business actions are shown.
+Rounds 1–7 are implemented. Password/Telegram sign-in, verified Client signup, secure sessions and account security work against the existing API contract. Client, Mother, Cyclist and Admin daily/financial/stock/archive workflows are active; Round 8 acceptance remains; no sample customer records, invented totals or simulated successful business actions are shown.
 
 Payments remain off-platform. Pending-payment deliveries stay operational. Deleted records retain history while active dependent work stops. Restoration never silently restarts cancelled work. The backend enforces those rules; mobile screens cannot grant exceptions.
 

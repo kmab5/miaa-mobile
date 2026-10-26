@@ -1,4 +1,4 @@
-# Dependency status — v0.6.0
+# Dependency status — v0.7.0
 
 Checked on 2026-10-26 against the pinned lockfile. The unfiltered `npm run security:audit` exits **1**, reporting five high dependency entries from two underlying advisories. This is not a clean security audit.
 
@@ -10,7 +10,7 @@ Root overrides retain compatible `uuid` 11.1.1, `esbuild` 0.28.2 and `js-yaml` 4
 
 Automatic CI checks source, native interactions and the installed SDK matrix; build tooling remains manual. These jobs do not assert a clean audit. The standalone security command retains its failing exit status. Upstream tooling deprecation notices are distinct from zero-warning project lint. Compatible upgrades must pass the same validation before adoption.
 
-Expo CLI also retains Zod 3.25.76 under its declared `^3.25.76` range. [GHSA-mrhx-c7xc-m3w5](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5) currently marks versions below 4.6.6 affected by oversized-collection memory exhaustion. The separate ESLint tooling copy is already 4.6.7. A blanket Zod 4 override would cross Expo CLI’s declared major range, so no unreviewed major substitution or forced Expo downgrade is applied. Both affected package graphs are development tooling. Rounds 4–6 check source boundaries and does not rebuild the earlier exported/native graphs. Keep development servers private and build from trusted inputs. Upstream SDK-compatible fixes should be adopted once verified.
+Expo CLI also retains Zod 3.25.76 under its declared `^3.25.76` range. [GHSA-mrhx-c7xc-m3w5](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5) currently marks versions below 4.6.6 affected by oversized-collection memory exhaustion. The separate ESLint tooling copy is already 4.6.7. A blanket Zod 4 override would cross Expo CLI’s declared major range, so no unreviewed major substitution or forced Expo downgrade is applied. Both affected package graphs are development tooling. Rounds 4–7 check source boundaries and do not rebuild the earlier exported/native graphs. Keep development servers private and build from trusted inputs. Upstream SDK-compatible fixes should be adopted once verified.
 
 The build runtime floor is now Node 24.22.1 on the 24 LTS line, matching `.nvmrc`, `.node-version`, CI and the validated environment. It is an upstream [security release](https://nodejs.org/en/blog/release/v24.22.1); older Round 1/2 runtime pins should be updated before installing dependencies.
 
@@ -19,3 +19,5 @@ The build runtime floor is now Node 24.22.1 on the 24 LTS line, matching `.nvmrc
 Round 5 adds only the local `@miaa/cyclist-portal` workspace. External package versions are unchanged. [Its unfiltered audit](security-audit-round5-2026-10-26.json) continues to report five high entries from the same two tooling advisories. No advisory is suppressed.
 
 Round 6 adds only the local `@miaa/admin-portal` workspace and declares the already pinned Expo Crypto 58.0.7 in the Admin app. External versions remain unchanged. [Its unfiltered audit](security-audit-round6-2026-10-26.json) still reports five high entries from the two documented tooling advisories, with no suppression.
+
+Round 7 extends the existing Admin workspace without changing external versions. [Its unfiltered audit](security-audit-round7-2026-10-26.json) is retained, with no advisory suppression or forced major override. Validation remains tests only.

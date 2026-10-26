@@ -260,6 +260,11 @@ export function Recovery() {
           <Notice title={t('pendingTitle')} body={t('pendingHelp')} />
           <AppText weight="semibold">{t(p.form)}</AppText>
           {!p.sensitive && p.body ? <RecordValues value={p.body} /> : null}
+          {/^records\/[a-zA-Z]+\/[1-9]\d*(?:\/restore)?$/.test(p.path) ? (
+            <AppText>
+              {t(p.path.split('/')[1]!)} · {t('id')}: {p.path.split('/')[2]}
+            </AppText>
+          ) : null}
           {/^\w+\/[1-9]\d*/.test(p.path) ? (
             <AppText>
               {t('id')}: {p.path.split('/')[1]}

@@ -1,3 +1,6 @@
+import { ArchiveControl } from './archive';
+import { AdminBusinessFormScreen } from './business-screens';
+import { isBusinessForm } from './business-forms';
 import { useState } from 'react';
 import { MobileApiError } from '@miaa/api';
 import { View } from 'react-native';
@@ -51,14 +54,16 @@ function Links() {
   const { t } = useAdminText();
   return (
     <View style={styles.group}>
-      {['daily', 'people', 'catalog', 'orders', 'payments', 'support', 'settings'].map((path) => (
-        <Button
-          key={path}
-          label={t(path)}
-          tone={path === 'daily' ? 'primary' : 'secondary'}
-          onPress={() => router.push(`/admin/${path}`)}
-        />
-      ))}
+      {['daily', 'people', 'catalog', 'orders', 'payments', 'support', 'settings', 'reports'].map(
+        (path) => (
+          <Button
+            key={path}
+            label={t(path)}
+            tone={path === 'daily' ? 'primary' : 'secondary'}
+            onPress={() => router.push(`/admin/${path}`)}
+          />
+        ),
+      )}
     </View>
   );
 }
@@ -202,6 +207,13 @@ export function AdminCatalogScreen() {
             target={Number(x.id)}
             label={`${t('edit')} · ${x.nameEn ?? x.labelEn}`}
           />
+          <ArchiveControl
+            kind={kind === 'dishes' ? 'dish' : 'packageType'}
+            target={Number(x.id)}
+            sourcePath={kind + '?includeInactive=true'}
+            sourceData={resource.data!}
+            record={x}
+          />
         </Card>
       ))}
     </AdminPage>
@@ -263,6 +275,13 @@ export function AdminPaymentsScreen() {
               <OpenForm form="paymentConfirm" target={Number(p.id)} />
             ) : null}
             <OpenForm form="failPayment" target={Number(p.id)} />
+            <ArchiveControl
+              kind="payment"
+              target={Number(p.id)}
+              sourcePath="payments/pending"
+              sourceData={r.data!}
+              record={p}
+            />
           </Card>
         );
       })}
@@ -292,6 +311,13 @@ export function AdminSupportScreen() {
           <OpenForm
             form={x.status === 'open' ? 'resolveTicket' : 'reopenTicket'}
             target={Number(x.id)}
+          />
+          <ArchiveControl
+            kind="ticket"
+            target={Number(x.id)}
+            sourcePath={'tickets' + (status ? '?status=' + status : '')}
+            sourceData={r.data!}
+            record={x}
           />
         </Card>
       ))}
@@ -382,6 +408,13 @@ export function AdminDailyScreen() {
               {(g.deliveries as Row[]).map((item) => (
                 <Card key={String(item.id)}>
                   <DeliveryActions item={item} day={day} />
+                  <ArchiveControl
+                    kind="delivery"
+                    target={Number(item.id)}
+                    sourcePath={`day?date=${day}`}
+                    sourceData={r.data!}
+                    record={item}
+                  />
                 </Card>
               ))}
             </Card>
@@ -439,6 +472,21 @@ function RecordScreen({ kind, target }: { kind: string; target: number }) {
       {data ? (
         <>
           <RecordValues value={data} />
+          <ArchiveControl
+            kind={
+              kind === 'mothers'
+                ? 'mother'
+                : kind === 'cyclists'
+                  ? 'cyclist'
+                  : kind === 'clients'
+                    ? 'client'
+                    : 'subscription'
+            }
+            target={target}
+            sourcePath={`${kind}/${target}`}
+            sourceData={data}
+            record={kind === 'orders' ? (data.subscription as Row) : data}
+          />
           {kind === 'orders' ? (
             <>
               <RecordValues value={data.subscription as Row} />
@@ -448,11 +496,25 @@ function RecordScreen({ kind, target }: { kind: string; target: number }) {
               {(data.payments as Row[]).map((p) => (
                 <Card key={String(p.id)}>
                   <RecordValues value={p} />
+                  <ArchiveControl
+                    kind="payment"
+                    target={Number(p.id)}
+                    sourcePath={`${kind}/${target}`}
+                    sourceData={data}
+                    record={p}
+                  />
                 </Card>
               ))}
               {(data.deliveries as Row[]).map((d) => (
                 <Card key={String(d.id)}>
                   <RecordValues value={d} />
+                  <ArchiveControl
+                    kind="delivery"
+                    target={Number(d.id)}
+                    sourcePath={`${kind}/${target}`}
+                    sourceData={data}
+                    record={d}
+                  />
                 </Card>
               ))}
             </>
@@ -503,6 +565,15 @@ function Offerings({ mother }: { mother: number }) {
       {rows(r.data).map((x) => (
         <Card key={String(x.packageTypeId)}>
           <RecordValues value={x} />
+          {x.offeringId ? (
+            <ArchiveControl
+              kind="offering"
+              target={Number(x.offeringId)}
+              sourcePath={`mothers/${mother}/offerings`}
+              sourceData={r.data!}
+              record={x}
+            />
+          ) : null}
         </Card>
       ))}
     </>
@@ -527,6 +598,7 @@ export function AdminFormScreen() {
     clientId?: string;
   }>();
   if (!isForm(p.form)) return <Invalid />;
+  if (isBusinessForm(p.form)) return <AdminBusinessFormScreen />;
   let target: number | null = null,
     client: number | null = null;
   try {

@@ -2,22 +2,22 @@
 
 This is an npm workspace containing four Expo/React Native applications. Each app has its own `app.config.ts`, application ID, URL scheme, assets and route entry. Its expected role is a compile-time entrypoint and is checked against runtime Expo configuration. Choosing a role in the UI never grants access. The backend authorizes every private request. Round 2 also checks returned identities against the installed app role before storing credentials or rendering private routes.
 
-| Location                                                   | Responsibility                                                                                                     |
-| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `apps/admin`, `apps/mother`, `apps/cyclist`, `apps/client` | Independent app identities and Expo Router entries                                                                 |
-| `packages/api`                                             | Portable bearer transport/contracts from web v0.19.0, plus a public health probe                                   |
-| `packages/auth`                                            | Session controller, SecureStore/memory adapters, identity validation and React context                             |
-| `packages/client-portal`                                   | Client DTO validation, screens, journal controller and secure/browser order storage                                |
-| `packages/admin-portal`                                    | Admin operational read contracts, bounded form descriptors, screens, reviewed mutations and secure action recovery |
-| `packages/cyclist-portal`                                  | Cyclist DTO validation, assigned run/lookup/earnings/meal screens and reviewed transition controller               |
-| `packages/mother-portal`                                   | Mother DTO validation, queue/meal/request screens, controller and scoped recovery markers                          |
-| `packages/config`                                          | Runtime configuration validation and supported role/variant types                                                  |
-| `packages/i18n`                                            | English/Amharic dictionaries and device-local language persistence                                                 |
-| `packages/ui`                                              | Mi'aa tokens, accessible components, original brand vectors and bundled fonts                                      |
-| `packages/shell`                                           | Authentication/security screens, guarded tabs, role-specific workflow overviews and connection feedback            |
-| `config`                                                   | Build-time identity, environment and Expo configuration factories                                                  |
-| `scripts`                                                  | Cross-platform Node tooling for checks, exports and native builds                                                  |
-| `tests`                                                    | Pure transport/config tests, React Native interaction tests and browser smoke checks                               |
+| Location                                                   | Responsibility                                                                                            |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `apps/admin`, `apps/mother`, `apps/cyclist`, `apps/client` | Independent app identities and Expo Router entries                                                        |
+| `packages/api`                                             | Portable bearer transport/contracts from web v0.19.0, plus a public health probe                          |
+| `packages/auth`                                            | Session controller, SecureStore/memory adapters, identity validation and React context                    |
+| `packages/client-portal`                                   | Client DTO validation, screens, journal controller and secure/browser order storage                       |
+| `packages/admin-portal`                                    | Admin operations, finance/stock/report/archive contracts and screens, reviewed writes and secure recovery |
+| `packages/cyclist-portal`                                  | Cyclist DTO validation, assigned run/lookup/earnings/meal screens and reviewed transition controller      |
+| `packages/mother-portal`                                   | Mother DTO validation, queue/meal/request screens, controller and scoped recovery markers                 |
+| `packages/config`                                          | Runtime configuration validation and supported role/variant types                                         |
+| `packages/i18n`                                            | English/Amharic dictionaries and device-local language persistence                                        |
+| `packages/ui`                                              | Mi'aa tokens, accessible components, original brand vectors and bundled fonts                             |
+| `packages/shell`                                           | Authentication/security screens, guarded tabs, role-specific workflow overviews and connection feedback   |
+| `config`                                                   | Build-time identity, environment and Expo configuration factories                                         |
+| `scripts`                                                  | Cross-platform Node tooling for checks, exports and native builds                                         |
+| `tests`                                                    | Pure transport/config tests, React Native interaction tests and browser smoke checks                      |
 
 ## Build configuration
 
@@ -39,7 +39,7 @@ The auth controller owns all token persistence and exposes credential-free state
 
 ## Client workflows
 
-The Client app supplies `ClientProvider` to the shared root’s provider hook, inside authentication. Other apps do not import its workflow package. Its protected `client/[screen]` route maps a fixed list of screens, with order IDs in validated query parameters. Legacy Client module links redirect to these screens. The Mother app has its own separate workflow package; The Cyclist workflow package is also separate; Admin daily workflows are implemented in their own package; finance/reporting/archive remain a later milestone.
+The Client app supplies `ClientProvider` to the shared root’s provider hook, inside authentication. Other apps do not import its workflow package. Its protected `client/[screen]` route maps a fixed list of screens, with order IDs in validated query parameters. Legacy Client module links redirect to these screens. The Mother app has its own separate workflow package; The Cyclist workflow package is also separate; Admin operations, finance, stock, reports and archive workflows are implemented in their own package.
 
 Read hooks abort on blur and ignore stale completions; order-detail data is also bound to its requested route. The backend owns dates, pricing, radius, capacity and permissions. UI dish filtering follows the existing fasting composition to guide choices, while the service validates again at purchase.
 
@@ -62,3 +62,5 @@ A single provider date timer updates the UI only when the EAT day changes. Calli
 The Admin app alone supplies `AdminProvider` to the shared authenticated root. A fixed route/form/action registry exposes the existing operational API without a raw-JSON editor or arbitrary endpoint entry. Typed form descriptors render localized fields and named choices; wire payloads keep money as strings, coordinates as finite numbers, active flags as booleans and IDs as validated selected numbers.
 
 Read contracts select only known response fields. Resource observations are tied to screen focus, and only active resources refresh after mutation. Reviewed target snapshots are checked again before writes. A scoped secure/browser journal commits each intention before sending; subscription retries preserve exact idempotency key/body. Minimal settled receipts retain a revision so concurrent stale reviews cannot silently create another record. Password text never enters the journal. See [ADMIN.md](ADMIN.md) for endpoint coverage and limits.
+
+Round 7 extends the Admin action registry with ledger entries, payouts, stock and bodyless archive/restoration. Business reads have strict query/period validation; composite kind/ID guards prevent cross-role collisions. Money/quantities remain decimal strings, and stock validation uses integer thousandths. The same journal namespace/version preserves pending Round 6 actions; non-idempotent financial/stock/archive writes have no automatic resend. See [ADMIN_FINANCE.md](ADMIN_FINANCE.md).

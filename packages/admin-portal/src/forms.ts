@@ -1,5 +1,7 @@
 import { normalizePhone, validPassword } from '@miaa/auth/src/validation';
 import { date, fault, id, object, text, todayEAT, type Row, type Value } from './contracts';
+import { businessForms, isBusinessForm, validateBusiness } from './business-forms';
+import { businessIdentity, recordKind } from './business-contracts';
 export type Field = {
   key: string;
   type?: 'text' | 'number' | 'money' | 'date' | 'bool' | 'phone' | 'password' | 'select';
@@ -29,6 +31,7 @@ const location = [
 const selector = (key: string, source: string, optional = false): Field =>
   f(key, 'select', { source, optional });
 export const forms = {
+  ...businessForms,
   mother: [
     ...name,
     ...location,
@@ -117,11 +120,13 @@ export function isForm(v: unknown): v is FormKind {
 export type Choices = Record<string, Row[]>;
 export type Draft = Record<string, string | boolean>;
 export function optionId(field: Field, r: Row) {
-  return field.key === 'motherOfferingId'
-    ? r.offeringId
-    : field.key === 'packageTypeId' && r.packageTypeId
-      ? r.packageTypeId
-      : r.id;
+  return field.key === 'personId'
+    ? r.personId
+    : field.key === 'motherOfferingId'
+      ? r.offeringId
+      : field.key === 'packageTypeId' && r.packageTypeId
+        ? r.packageTypeId
+        : r.id;
 }
 export function validate(kind: FormKind, draft: Draft, options: Choices, now = Date.now()): Row {
   const out: Row = {};
@@ -176,7 +181,9 @@ export function validate(kind: FormKind, draft: Draft, options: Choices, now = D
     } else if (field.source) {
       const n = Number(value);
       const match = options[field.source]?.find(
-        (x) => optionId(field, x) === n && x.active !== false && x.status !== 'inactive',
+        (x) =>
+          optionId(field, x) === n &&
+          (kind === 'financeEntry' || (x.active !== false && x.status !== 'inactive')),
       );
       if (!match) fault('invalid_input');
       out[field.key] = id(n);
@@ -218,7 +225,7 @@ export function validate(kind: FormKind, draft: Draft, options: Choices, now = D
       wd = new Date(d + 'T00:00:00Z').getUTCDay();
     if (d <= todayEAT(now) || wd < 1 || wd > 5) fault('invalid_input');
   }
-  return out;
+  return isBusinessForm(kind) ? validateBusiness(kind, out, options, now) : out;
 }
 export function initial(kind: FormKind, source: Row | null = null): Draft {
   const d: Draft = {};
@@ -236,24 +243,39 @@ export function initial(kind: FormKind, source: Row | null = null): Draft {
   if ('locale' in d && !d.locale) d.locale = 'en';
   if ('paymentMethod' in d && !d.paymentMethod) d.paymentMethod = 'cash';
   if ('inspectedAt' in d && !d.inspectedAt) d.inspectedAt = todayEAT();
+  if ('occurredOn' in d && !d.occurredOn) d.occurredOn = todayEAT();
+  if (kind === 'financeEntry' && !d.direction) d.direction = 'expense';
+  if (kind === 'stockMovement' && !d.movementType) d.movementType = 'purchase';
+  if (kind === 'stockItem' && !d.unit) d.unit = 'piece';
   return d;
 }
-export type Guard = { path: string; identity?: number; fingerprint: string };
+export type Guard = { path: string; identity?: number; key?: string; fingerprint: string };
 export type Action = {
   form: FormKind;
   path: string;
-  method: 'POST' | 'PATCH';
+  method: 'POST' | 'PATCH' | 'DELETE';
   body?: Row;
   guard?: Guard;
   sensitive: boolean;
 };
 export function action(kind: FormKind, body: Row, target: number | null, guard?: Guard): Action {
+  if (kind === 'archiveRecord' || kind === 'restoreRecord') {
+    const path = `records/${recordKind(body.recordKind)}/${id(target)}${kind === 'restoreRecord' ? '/restore' : ''}`;
+    return {
+      form: kind,
+      path,
+      method: kind === 'archiveRecord' ? 'DELETE' : 'POST',
+      sensitive: false,
+      ...(guard ? { guard } : {}),
+    };
+  }
   const base: Partial<Record<FormKind, string>> = {
     mother: 'mothers',
     cyclist: 'cyclists',
     client: 'clients',
     dish: 'dishes',
     package: 'packages',
+    stockItem: 'stock',
   };
   let path = base[kind],
     method: 'POST' | 'PATCH' = target ? 'PATCH' : 'POST';
@@ -268,6 +290,9 @@ export function action(kind: FormKind, body: Row, target: number | null, guard?:
       order: 'orders',
       redelivery: 'redeliveries',
       settings: 'settings',
+      financeEntry: 'finance',
+      payout: 'payouts',
+      stockMovement: 'stock/movements',
     };
     path = fixed[kind];
     if (path) method = kind === 'settings' ? 'PATCH' : 'POST';
@@ -345,6 +370,33 @@ export function validateAction(value: unknown): Action {
       allowed.add('dishPattern');
     }
     if (x.form === 'redelivery') allowed.add('sourceDeliveryId');
+    if (isBusinessForm(x.form) && !['archiveRecord', 'restoreRecord'].includes(x.form)) {
+      const fields = forms[x.form] as Field[];
+      const draft: Draft = {};
+      for (const f of fields)
+        draft[f.key] =
+          body[f.key] === undefined
+            ? f.type === 'bool'
+              ? false
+              : ''
+            : f.type === 'bool'
+              ? (body[f.key] as boolean)
+              : String(body[f.key]);
+      const choices: Choices = {
+        mothers: [{ id: body.relatedMotherId! }],
+        cyclists: [{ id: body.relatedCyclistId! }],
+        payees: [{ kind: body.kind!, personId: body.personId! }],
+        stock: [
+          { id: body.stockItemId!, active: true, unit: 'kg', currentQuantity: '999999999.999' },
+        ],
+      };
+      const checked = validate(x.form, draft, choices);
+      for (const [key, value] of Object.entries(checked))
+        if (body[key] !== value) fault('storage_error');
+      for (const [key, value] of Object.entries(body))
+        if (checked[key] !== value) fault('storage_error');
+    }
+
     if (Object.keys(body).some((k) => !allowed.has(k))) fault('storage_error');
     if (x.form === 'order') {
       id(body.clientId);
@@ -373,13 +425,17 @@ export function validateAction(value: unknown): Action {
   let target: number | null = null;
   if (parts.length > 1 && /^\d+$/.test(parts[1]!)) target = id(Number(parts[1]));
   if (x.form === 'redelivery') target = id(body?.sourceDeliveryId);
-  const built = action(x.form, body ?? {}, target);
+  const archive = x.form === 'archiveRecord' || x.form === 'restoreRecord';
+  if (archive && body !== undefined) fault('storage_error');
+  if (archive) target = id(Number(parts[2]));
+  const built = action(x.form, archive ? { recordKind: parts[1]! } : (body ?? {}), target);
   if (built.path !== path || built.method !== x.method || built.sensitive !== x.sensitive)
     fault('storage_error');
   delete built.body;
   return { ...built, ...(body ? { body } : {}) };
 }
-export function guardData(data: Value | Row[], identity?: number): Value {
+export function guardData(data: Value | Row[], identity?: number, key?: string): Value {
+  if (key !== undefined) return businessIdentity(data as Row | Row[], key);
   if (identity === undefined) return data;
   if (Array.isArray(data)) {
     const item = (data as Row[]).find(

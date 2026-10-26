@@ -36,7 +36,7 @@ test.each(Object.keys(adminReads))('backend Admin read contract: %s', (key) => {
 test.each([
   '../day',
   'https://evil.example',
-  'finance',
+  'finance?direction=unapproved',
   'records/mothers/1',
   'mothers/0',
   'clients/3?includeInactive=true&x=1',
@@ -168,6 +168,12 @@ test('replacement requires a future weekday and audit reason', () => {
   ).toBe('Replacement');
 });
 const paths: Partial<Record<FormKind, [string, number | null]>> = {
+  financeEntry: ['finance', null],
+  payout: ['payouts', null],
+  stockItem: ['stock', null],
+  stockMovement: ['stock/movements', null],
+  archiveRecord: ['records/mother/1', 1],
+  restoreRecord: ['records/mother/1/restore', 1],
   mother: ['mothers', null],
   cyclist: ['cyclists', null],
   client: ['clients', null],
@@ -199,7 +205,13 @@ test.each(Object.keys(forms) as FormKind[])(
   (kind) => {
     expect(paths[kind]).toBeTruthy();
     const [path, target] = paths[kind]!;
-    expect(action(kind, {}, target).path).toBe(path);
+    expect(
+      action(
+        kind,
+        kind === 'archiveRecord' || kind === 'restoreRecord' ? { recordKind: 'mother' } : {},
+        target,
+      ).path,
+    ).toBe(path);
   },
 );
 test('offering preflight guards the exact priced row rather than a UI-only identifier', () =>

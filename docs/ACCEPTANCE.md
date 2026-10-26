@@ -1,3 +1,19 @@
+# Round 7 acceptance additions
+
+These require authorized Admin accounts and actual devices. Automated financial/stock/archive actions use fixtures only.
+
+- Compare selected-period ledger summaries, filtered recent entries and all six analytics reports with the web. Include negative net/margins, null rates, mixed historical rates, old-rate fallbacks and thin cost coverage. Keep subscription cash separate from manual-ledger totals.
+- Record an off-platform ledger entry, payout and purchase with linked expense in a test environment. Check dates, counterparties, server rounding, saved balance and linked expense. Confirm no money is transferred and no second expense is created by the client.
+- Change a payout report, stock balance/unit/status, or target between review and confirmation. Require a fresh review; test the remaining race at the server after preflight. Test consumption shortages, fractional whole units, negative corrections and EAT midnight.
+- Archive test staff/client/catalog/subscription/delivery/payment/request/finance/stock records. Verify linked active work stops and historical references remain. Inspect the different stock balance and ledger effects, including when only one linked record is archived.
+- Restore test records with live and missing parents, including a client (whose user account is reactivated). Confirm cancelled work and disabled staff stay stopped. There is no permanent-delete or automatic cascade-restore action.
+- Lose each financial/stock/archive response, kill/restart, sign out/back in and check owner-scoped recovery. Resolve the result with the office before clearing; no non-idempotent write is automatically resent. Carry a pending Round 6 action through the upgrade.
+- Inspect slow Render startup, offline/rate-limited reads, narrow/large-text layouts, signed-out/wrong-role links, TalkBack/VoiceOver and English/Amharic on Android/iOS. Human Amharic editorial review remains pending.
+
+No Round 7 export, native build or binary was produced. See [ADMIN_FINANCE.md](ADMIN_FINANCE.md) and [VALIDATION.md](../VALIDATION.md).
+
+---
+
 # Round 6 acceptance additions
 
 These need authorized Admin accounts/devices; automated private actions use fixtures.

@@ -1,5 +1,12 @@
 import { useLocalSearchParams } from 'expo-router';
 import {
+  AdminReportsScreen,
+  AdminFinanceScreen,
+  AdminPayoutsScreen,
+  AdminStockScreen,
+  AdminStockDetailScreen,
+  AdminAnalyticsScreen,
+  AdminArchiveScreen,
   AdminDailyScreen,
   AdminPeopleScreen,
   AdminCatalogScreen,
@@ -12,6 +19,13 @@ import {
 } from '@miaa/admin-portal';
 import { NotFoundScreen } from '@miaa/shell';
 const screens = {
+  reports: AdminReportsScreen,
+  finance: AdminFinanceScreen,
+  payouts: AdminPayoutsScreen,
+  stock: AdminStockScreen,
+  'stock-detail': AdminStockDetailScreen,
+  analytics: AdminAnalyticsScreen,
+  archive: AdminArchiveScreen,
   daily: AdminDailyScreen,
   people: AdminPeopleScreen,
   catalog: AdminCatalogScreen,
