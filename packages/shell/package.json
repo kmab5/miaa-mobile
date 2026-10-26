@@ -1,6 +1,6 @@
 {
   "name": "@miaa/shell",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -9,10 +9,10 @@
     "react-native": "0.88.0"
   },
   "dependencies": {
-    "@miaa/api": "0.4.0",
-    "@miaa/config": "0.4.0",
-    "@miaa/i18n": "0.4.0",
-    "@miaa/ui": "0.4.0",
+    "@miaa/api": "0.5.0",
+    "@miaa/config": "0.5.0",
+    "@miaa/i18n": "0.5.0",
+    "@miaa/ui": "0.5.0",
     "expo": "58.0.16",
     "expo-constants": "58.0.12",
     "expo-font": "58.0.9",
@@ -20,6 +20,6 @@
     "expo-splash-screen": "58.0.10",
     "expo-status-bar": "58.0.3",
     "react-native-safe-area-context": "5.10.1",
-    "@miaa/auth": "0.4.0"
+    "@miaa/auth": "0.5.0"
   }
 }

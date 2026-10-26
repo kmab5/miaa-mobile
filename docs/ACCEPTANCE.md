@@ -1,3 +1,20 @@
+# Round 5 acceptance additions
+
+These require authorized Cyclist accounts/devices; automation uses fixtures.
+
+- Compare the real rider's kitchen, ready/on-the-way/delivered sections, preparing count and assigned total with the web portal. Verify other-rider stickers and assignments cannot be read or changed.
+- Review/collect one actual package and review/confirm its handover. Compare server status, confirmation time, one-time delivery rate and earnings counts. Repeated taps, concurrent rider sessions and lost responses must not duplicate transitions.
+- Reassign, cancel or change a delivery between review and confirmation; verify a refresh/fresh review is required. Confirm no client PIN or new collection-time lock has been invented.
+- Look up exact normal and replacement stickers with/without `MA-`. Edit/clear/leave a pending lookup; verify the previous client's details disappear and stale results cannot reopen it.
+- Test real kitchen/client phone handlers, malformed phone data, failed OS handlers and maps on Android/iOS. Confirm the saved delivery pin is used and no new location permission is requested.
+- Verify the last-seven-day count/current rate and office payout explanation against the backend. The app must not show a fabricated owed/paid total.
+- Record a named and unnamed staff meal on separate test days; retry an uncertain result and confirm one daily row. Exercise EAT midnight during an open review and during a network request.
+- Test session revocation, foreground validation, slow Render startup, offline recovery, rate limits, English/Amharic, narrow/large-text layouts and screen readers. Human Amharic editorial review remains pending.
+
+No Round 5 exports or native builds were run. See [CYCLIST.md](CYCLIST.md) and [VALIDATION.md](../VALIDATION.md).
+
+---
+
 # Round 4 acceptance additions
 
 These require authorized Mother accounts/devices; automated tests use fixtures.

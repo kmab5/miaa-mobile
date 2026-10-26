@@ -74,6 +74,7 @@ for (const name of [
   'auth',
   'client-portal',
   'mother-portal',
+  'cyclist-portal',
   'config',
   'i18n',
   'ui',
@@ -103,13 +104,20 @@ for (const role of roles) {
     }
   }
   visit(app);
-  for (const workflow of ['client', 'mother'])
+  for (const workflow of ['client', 'mother', 'cyclist'])
     assert(
       role === workflow || !visited.has(`@miaa/${workflow}-portal`),
       `${role}: imports ${workflow} workflows`,
     );
 }
 assert(existsSync('apps/mother/app/mother/[screen].tsx'), 'Mother routes are missing');
+assert(existsSync('apps/cyclist/app/cyclist/[screen].tsx'), 'Cyclist routes are missing');
+assert(
+  JSON.parse(readFileSync('apps/cyclist/package.json', 'utf8')).dependencies[
+    '@miaa/cyclist-portal'
+  ] === pkg.version,
+  'Cyclist workflow dependency drift',
+);
 const mother = JSON.parse(readFileSync('apps/mother/package.json', 'utf8'));
 assert(
   mother.dependencies['expo-crypto'] === '58.0.7' &&

@@ -79,6 +79,7 @@ function RootContent({ role }: { role: AppRole }) {
           <Stack.Screen name="security" />
           {role === 'client' ? <Stack.Screen name="client/[screen]" /> : null}
           {role === 'mother' ? <Stack.Screen name="mother/[screen]" /> : null}
+          {role === 'cyclist' ? <Stack.Screen name="cyclist/[screen]" /> : null}
         </Stack.Protected>
         <Stack.Protected guard={auth.phase !== 'signedIn'}>
           <Stack.Screen name="sign-in" />

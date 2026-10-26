@@ -1,1 +1,1 @@
-export { WorkspaceScreen as default } from '@miaa/shell';
+export { CyclistWorkspaceScreen as default } from '@miaa/cyclist-portal';

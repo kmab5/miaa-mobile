@@ -1,1 +1,1 @@
-export { HomeScreen as default } from '@miaa/shell';
+export { CyclistHomeScreen as default } from '@miaa/cyclist-portal';

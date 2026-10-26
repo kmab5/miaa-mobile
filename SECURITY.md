@@ -31,3 +31,9 @@ No bank/card processor, map SDK, location permission, analytics service or new p
 Mother queue, packaging, dish options, staff meal and request endpoints derive ownership from the authenticated backend actor. The app accepts no alternate mother/recipient ID and offers no admin deadline override. Read generations and auth/controller disposal discard stale private responses; business data is held in memory only.
 
 Before a support insert, a small scoped device-only SecureStore marker records the reviewed text’s SHA-256 fingerprint, prior record IDs and attempt time. Browser previews use localStorage plus Web Locks. The text and credentials are not in the marker, though low-entropy text fingerprints are still metadata and are scoped accordingly. Unknown results block a new send; read-only history remains accessible. An explicit history/office review can remove the reminder after explaining duplicate risk. This cannot supply server idempotency or cross-device deduplication. See [MOTHER.md](docs/MOTHER.md).
+
+## Cyclist workflow boundaries
+
+Cyclist reads and writes use the bearer actor's assignment. Only the Cyclist app imports its workflow package. Delivery review captures the EAT date and exact item snapshot; confirmation reloads the assigned run and rejects changed or missing items. No admin, payment or assignment override is exposed. Unknown responses do not trigger automatic write retries. All business data remains in memory, with superseded reads aborted and controller ownership tied to authentication.
+
+Calling accepts validated `tel:` numbers only. Maps uses a fixed HTTPS Google Maps host and validated saved coordinates after an explicit tap, without GPS permission or server-supplied destination URLs. The app does not calculate payouts, introduce client PIN confirmation, or claim offline/physical-device acceptance. See [CYCLIST.md](docs/CYCLIST.md).

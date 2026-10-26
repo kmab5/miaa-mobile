@@ -8,6 +8,7 @@ This is an npm workspace containing four Expo/React Native applications. Each ap
 | `packages/api`                                             | Portable bearer transport/contracts from web v0.19.0, plus a public health probe                        |
 | `packages/auth`                                            | Session controller, SecureStore/memory adapters, identity validation and React context                  |
 | `packages/client-portal`                                   | Client DTO validation, screens, journal controller and secure/browser order storage                     |
+| `packages/cyclist-portal`                                  | Cyclist DTO validation, assigned run/lookup/earnings/meal screens and reviewed transition controller    |
 | `packages/mother-portal`                                   | Mother DTO validation, queue/meal/request screens, controller and scoped recovery markers               |
 | `packages/config`                                          | Runtime configuration validation and supported role/variant types                                       |
 | `packages/i18n`                                            | English/Amharic dictionaries and device-local language persistence                                      |
@@ -37,7 +38,7 @@ The auth controller owns all token persistence and exposes credential-free state
 
 ## Client workflows
 
-The Client app supplies `ClientProvider` to the shared root’s provider hook, inside authentication. Other apps do not import its workflow package. Its protected `client/[screen]` route maps a fixed list of screens, with order IDs in validated query parameters. Legacy Client module links redirect to these screens. The Mother app has its own separate workflow package; Cyclist and Admin module overviews remain separate.
+The Client app supplies `ClientProvider` to the shared root’s provider hook, inside authentication. Other apps do not import its workflow package. Its protected `client/[screen]` route maps a fixed list of screens, with order IDs in validated query parameters. Legacy Client module links redirect to these screens. The Mother app has its own separate workflow package; The Cyclist workflow package is also separate; Admin modules remain overviews.
 
 Read hooks abort on blur and ignore stale completions; order-detail data is also bound to its requested route. The backend owns dates, pricing, radius, capacity and permissions. UI dish filtering follows the existing fasting composition to guide choices, while the service validates again at purchase.
 
@@ -48,3 +49,9 @@ The order journal is scoped to authenticated user, backend and build variant, ac
 `MotherProvider` is inside authentication and is imported only by the Mother app. A fixed protected route allowlist and legacy aliases expose queue, staff meal and support. The source audit checks role dependency graphs so neither Mother nor Client workflows enter another app through shared dependencies.
 
 A controller owns backend day/dish/ticket responses, read generations, explicit mutations, cooldown and recovery. The clock is observed through state rather than read during rendering. Packaging re-reads authoritative status/deadlines before a POST. Meal writes use the backend's daily uniqueness rule. Support inserts have no idempotency endpoint, so a scoped SecureStore/browser marker is committed before POST; unknown results block another send until history/office review. See [MOTHER.md](MOTHER.md) for the complete contract and limitations.
+
+## Cyclist workflows
+
+`CyclistProvider` is supplied only by the Cyclist app and remains inside authentication. A protected route allowlist and legacy aliases expose assigned run, exact sticker lookup, earnings and staff meals. The controller binds reads to explicit EAT dates/queries, aborts superseded reads, validates DTOs and consumes frozen reviews once. A fresh assigned-run read must still match the reviewed item before a delivery POST. No business data is persisted offline.
+
+A single provider date timer updates the UI only when the EAT day changes. Calling uses validated telephone numbers; map links use a fixed HTTPS host and subscription coordinates. Earnings display backend counts/current rate without calculating payout. See [CYCLIST.md](CYCLIST.md) for current policy, state transitions and acceptance limits.
