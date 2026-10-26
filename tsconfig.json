@@ -1,0 +1,29 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noEmit": true,
+    "allowJs": false,
+    "resolveJsonModule": true,
+    "types": ["node", "jest"],
+    "ignoreDeprecations": "6.0"
+  },
+  "include": [
+    "apps/**/*.ts",
+    "apps/**/*.tsx",
+    "packages/**/*.ts",
+    "packages/**/*.tsx",
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+    "playwright.config.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/android/**",
+    "**/ios/**",
+    "**/dist/**",
+    "**/.expo/**",
+    "artifacts"
+  ]
+}

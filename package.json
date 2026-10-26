@@ -1,0 +1,67 @@
+{
+  "name": "miaa-mobile",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Four Mi'aa mobile apps sharing one API, design system and localization.",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": "^24.19.0"
+  },
+  "packageManager": "npm@11.9.0",
+  "scripts": {
+    "start": "node scripts/expo.mjs client start",
+    "start:admin": "node scripts/expo.mjs admin start",
+    "start:mother": "node scripts/expo.mjs mother start",
+    "start:cyclist": "node scripts/expo.mjs cyclist start",
+    "start:client": "node scripts/expo.mjs client start",
+    "android": "node scripts/android.mjs client development",
+    "ios": "node scripts/expo.mjs client run:ios",
+    "web": "node scripts/expo.mjs client start --web",
+    "lint": "eslint . --max-warnings=0",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit",
+    "test": "jest --runInBand",
+    "test:watch": "jest --watch",
+    "test:ui": "playwright test",
+    "audit:project": "node scripts/audit.mjs",
+    "check": "npm run lint && npm run format:check && npm run typecheck && npm test && npm run audit:project",
+    "export:all": "node scripts/export.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "build:android": "node scripts/android.mjs",
+    "verify:android": "node scripts/verify-android.mjs",
+    "security:audit": "npm audit",
+    "assets:generate": "node scripts/generate-assets.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.5",
+    "eslint": "9.39.5",
+    "typescript-eslint": "8.72.0",
+    "eslint-plugin-react": "7.37.5",
+    "eslint-plugin-react-hooks": "7.0.1",
+    "globals": "16.5.0",
+    "prettier": "3.9.10",
+    "typescript": "6.0.3",
+    "@types/react": "19.3.0",
+    "@types/node": "24.10.0",
+    "@types/jest": "30.0.0",
+    "jest": "30.5.2",
+    "jest-expo": "58.0.11",
+    "@react-native/jest-preset": "0.88.0",
+    "@testing-library/react-native": "14.1.0",
+    "test-renderer": "1.0.0",
+    "babel-preset-expo": "58.0.8",
+    "@playwright/test": "1.61.1",
+    "tsx": "4.21.0",
+    "dotenv": "17.2.3",
+    "sharp": "0.35.5"
+  },
+  "overrides": {
+    "uuid": "11.1.1",
+    "esbuild": "0.28.2",
+    "js-yaml": "4.3.2"
+  }
+}

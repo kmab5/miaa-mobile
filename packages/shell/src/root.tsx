@@ -1,0 +1,101 @@
+import { useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { Stack, type ErrorBoundaryProps } from 'expo-router';
+import Constants from 'expo-constants';
+import * as SplashScreen from 'expo-splash-screen';
+import { StatusBar } from 'expo-status-bar';
+import { useFonts } from 'expo-font';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { readAppConfiguration, type AppRole } from '@miaa/config';
+import { LocaleProvider, useTranslation } from '@miaa/i18n';
+import { AppText, Button, Brand, colors, fontAssets, FontAvailabilityProvider } from '@miaa/ui';
+import { AppContext } from './context';
+void SplashScreen.preventAutoHideAsync().catch(() => undefined);
+export function AppRoot({ role }: { role: AppRole }) {
+  const configuration = useMemo(
+    () => readAppConfiguration(Constants.expoConfig?.extra, role),
+    [role],
+  );
+  return (
+    <SafeAreaProvider>
+      <AppContext.Provider value={configuration}>
+        <LocaleProvider>
+          <RootContent />
+        </LocaleProvider>
+      </AppContext.Provider>
+    </SafeAreaProvider>
+  );
+}
+function RootContent() {
+  const { ready, t, locale } = useTranslation();
+  const [fontsLoaded, fontError] = useFonts(fontAssets);
+  const [fontTimeout, setFontTimeout] = useState(false);
+  useEffect(() => {
+    if (fontsLoaded || fontError) return;
+    const timer = setTimeout(() => setFontTimeout(true), 8000);
+    return () => clearTimeout(timer);
+  }, [fontsLoaded, fontError]);
+  useEffect(() => {
+    if (ready && (fontsLoaded || fontError || fontTimeout))
+      void SplashScreen.hideAsync().catch(() => undefined);
+  }, [ready, fontsLoaded, fontError, fontTimeout]);
+  if (!ready || (!fontsLoaded && !fontError && !fontTimeout))
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator color={colors.black} accessibilityLabel={t('common.loading')} />
+      </View>
+    );
+  return (
+    <FontAvailabilityProvider ready={fontsLoaded}>
+      <StatusBar style="dark" />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: colors.white },
+          animation: 'slide_from_right',
+          headerTitleStyle: {
+            fontFamily: locale === 'am' ? 'EthiopicSemiBold' : 'PoppinsSemiBold',
+          },
+        }}
+      >
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="modules/[module]" />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+    </FontAvailabilityProvider>
+  );
+}
+/** The boundary does not expose exception messages, configuration or stack traces. */
+export function AppRouteError({ retry }: ErrorBoundaryProps) {
+  return (
+    <SafeAreaProvider>
+      <LocaleProvider>
+        <FontAvailabilityProvider ready={false}>
+          <ErrorContent retry={retry} />
+        </FontAvailabilityProvider>
+      </LocaleProvider>
+    </SafeAreaProvider>
+  );
+}
+function ErrorContent({ retry }: { retry(): void }) {
+  const { t } = useTranslation();
+  return (
+    <SafeAreaView style={styles.error}>
+      <Brand />
+      <AppText variant="title" weight="semibold" accessibilityRole="header">
+        {t('common.problem')}
+      </AppText>
+      <AppText>{t('common.problemBody')}</AppText>
+      <Button label={t('common.retry')} onPress={retry} />
+    </SafeAreaView>
+  );
+}
+const styles = StyleSheet.create({
+  loading: {
+    flex: 1,
+    backgroundColor: colors.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  error: { flex: 1, backgroundColor: colors.white, justifyContent: 'center', padding: 24, gap: 24 },
+});

@@ -158,3 +158,37 @@ docs/pages/versions/*/react-native/*.diff
 # Secrets - contains real secrets fetched from GCP
 /secrets/keys.json
 /secrets/expotools.env
+
+# Mi'aa generated projects (Expo CNG)
+/apps/*/android/
+/apps/*/ios/
+/apps/*/dist/
+/apps/*/.expo/
+
+# Local config, signing credentials and generated output
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+*.jks
+*.keystore
+*.p12
+*.mobileprovision
+credentials.json
+/build-key
+/build-key.*
+local.properties
+*.aab
+/artifacts/
+/coverage/
+/test-results/
+/playwright-report/
+/build/
+.tmp/
+*.log
+/apps/*/dist-*/
+
+# Personal
+raw/

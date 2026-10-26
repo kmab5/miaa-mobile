@@ -1,0 +1,14 @@
+node_modules
+**/android
+**/ios
+**/dist
+**/.expo
+artifacts
+coverage
+playwright-report
+test-results
+package-lock.json
+assets/brand/*.svg
+packages/ui/assets
+apps/*/assets
+**/dist-*
