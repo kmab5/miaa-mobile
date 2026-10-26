@@ -1,3 +1,19 @@
+# Round 4 acceptance additions
+
+These require authorized Mother accounts/devices; automated tests use fixtures.
+
+- Compare the actual kitchen queue, dish/non-spicy/remaining totals and sticker/notes/replacement details with the web portal. Verify another kitchen cannot be read or changed.
+- Review/package one preparing delivery before the configured EAT deadline. Repeat taps and simulate a lost response; verify one transition and recorded cooking rate/time. Confirm the deadline blocks the Mother but permits the existing web Admin correction flow.
+- Set the phone to another timezone, cross the deadline while a review is open, background/foreground and revoke the session. Verify actions remain scoped and backend rules prevail.
+- Record a named and unnamed staff meal on separate test days. Retry a lost receipt and confirm one row per day. Inspect rollover behavior; the existing endpoint uses server today.
+- Send a reviewed support request, lose the response, restart/logout/sign back into the same account and check history without resending. Confirm a different account sees no marker. Inspect absent-history/office-review clearing, rate limits and blocked/corrupt storage.
+- Verify SecureStore recovery on actual Android/iOS and browser preview Web Locks/storage. Clear app data only after resolving uncertain writes.
+- Verify English/Amharic layout, long notes, large text, TalkBack/VoiceOver, keyboards and narrow phones. Human Amharic editorial review remains pending.
+
+No Round 4 platform exports, APKs or native builds were run. See [MOTHER.md](MOTHER.md) and [VALIDATION.md](../VALIDATION.md).
+
+---
+
 # Round 3 acceptance additions
 
 These checks require authorized devices/accounts; automation uses fixtures.

@@ -1,1 +1,1 @@
-export { WorkspaceScreen as default } from '@miaa/shell';
+export { MotherWorkspaceScreen as default } from '@miaa/mother-portal';

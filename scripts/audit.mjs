@@ -69,13 +69,53 @@ for (const role of roles) {
   }
 }
 assert(themedIcons.size === roles.length, 'Themed icons must distinguish all four roles');
-for (const name of ['api', 'auth', 'client-portal', 'config', 'i18n', 'ui', 'shell']) {
+for (const name of [
+  'api',
+  'auth',
+  'client-portal',
+  'mother-portal',
+  'config',
+  'i18n',
+  'ui',
+  'shell',
+]) {
   const p = JSON.parse(readFileSync(`packages/${name}/package.json`, 'utf8'));
   assert(
     p.version === pkg.version && p.private === true && existsSync(`packages/${name}/${p.main}`),
     `${name}: invalid workspace entry/version`,
   );
 }
+// Role workflows must remain outside other apps' dependency graphs.
+const workspacePackages = Object.fromEntries(
+  readdirSync('packages').map((name) => {
+    const p = JSON.parse(readFileSync(`packages/${name}/package.json`, 'utf8'));
+    return [p.name, p];
+  }),
+);
+for (const role of roles) {
+  const app = JSON.parse(readFileSync(`apps/${role}/package.json`, 'utf8'));
+  const visited = new Set();
+  function visit(p) {
+    for (const name of Object.keys(p.dependencies ?? {})) {
+      if (visited.has(name)) continue;
+      visited.add(name);
+      if (workspacePackages[name]) visit(workspacePackages[name]);
+    }
+  }
+  visit(app);
+  for (const workflow of ['client', 'mother'])
+    assert(
+      role === workflow || !visited.has(`@miaa/${workflow}-portal`),
+      `${role}: imports ${workflow} workflows`,
+    );
+}
+assert(existsSync('apps/mother/app/mother/[screen].tsx'), 'Mother routes are missing');
+const mother = JSON.parse(readFileSync('apps/mother/package.json', 'utf8'));
+assert(
+  mother.dependencies['expo-crypto'] === '58.0.7' &&
+    mother.dependencies['@miaa/mother-portal'] === pkg.version,
+  'Mother native/workflow dependency drift',
+);
 const lock = JSON.parse(readFileSync('package-lock.json', 'utf8'));
 assert(lock.packages[''].version === pkg.version, 'Lockfile/root version drift');
 for (const name of ['react', 'react-native']) {

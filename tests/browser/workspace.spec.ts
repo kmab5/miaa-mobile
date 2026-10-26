@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test';
+import { motherDay } from '../fixtures/mother';
 const apps = [
   { role: 'admin', heading: 'Keep lunch moving.', module: 'Daily operations' },
-  { role: 'mother', heading: 'Good food starts with you.', module: 'Preparation list' },
+  { role: 'mother', heading: 'Kitchen today', module: 'Preparation queue' },
   { role: 'cyclist', heading: 'Every lunch, delivered.', module: 'My delivery run' },
   { role: 'client', heading: 'Your next lunch, sorted.', module: 'Today’s lunch' },
 ];
@@ -61,6 +62,23 @@ for (const [index, app] of apps.entries()) {
         body: JSON.stringify({ data: [] }),
       }),
     );
+    await page.route('**/api/v1/mother/**', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          'Access-Control-Allow-Methods': 'GET,OPTIONS',
+        },
+        body: JSON.stringify({
+          data: {
+            ...motherDay,
+            date: new Date(Date.now() + 3 * 3600000).toISOString().slice(0, 10),
+          },
+        }),
+      }),
+    );
     await page.goto(origin);
     await page.getByLabel('Phone number or email', { exact: true }).fill('0911111111');
     await page.getByLabel('Password', { exact: true }).fill('test-password');
@@ -70,14 +88,28 @@ for (const [index, app] of apps.entries()) {
     expect(
       await tabLabel.evaluate((element) => element.getBoundingClientRect().height),
     ).toBeGreaterThanOrEqual(18);
-    await page.getByRole('button', { name: 'Explore workspace' }).click();
-    const moduleLink = page.getByRole('link', { name: app.module, exact: true });
-    await expect(moduleLink).toHaveCSS('flex-direction', 'row');
-    await expect(moduleLink).toHaveCSS('padding-left', '18px');
-    await moduleLink.click();
-    await expect(page.getByRole('heading', { name: app.module, exact: true })).toBeVisible();
-    await page.getByRole('button', { name: 'Go back', exact: true }).click();
-    await expect(moduleLink).toBeVisible();
+    if (app.role === 'mother') {
+      await page.getByRole('tab', { name: 'Workspace', exact: true }).click();
+      await page
+        .getByRole('button', { name: app.module, exact: true })
+        .filter({ visible: true })
+        .click();
+      await expect(page.getByRole('heading', { name: app.module, exact: true })).toBeVisible();
+      await page
+        .getByRole('button', { name: 'Back', exact: true })
+        .filter({ visible: true })
+        .click();
+      await expect(page.getByRole('heading', { name: 'Kitchen workspace' })).toBeVisible();
+    } else {
+      await page.getByRole('button', { name: 'Explore workspace' }).click();
+      const moduleLink = page.getByRole('link', { name: app.module, exact: true });
+      await expect(moduleLink).toHaveCSS('flex-direction', 'row');
+      await expect(moduleLink).toHaveCSS('padding-left', '18px');
+      await moduleLink.click();
+      await expect(page.getByRole('heading', { name: app.module, exact: true })).toBeVisible();
+      await page.getByRole('button', { name: 'Go back', exact: true }).click();
+      await expect(moduleLink).toBeVisible();
+    }
     await page.getByRole('tab', { name: 'Settings', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Make yourself at home.' })).toBeVisible();
     await page.getByRole('radio', { name: 'አማርኛ', exact: true }).click();

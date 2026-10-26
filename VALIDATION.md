@@ -1,33 +1,28 @@
-# Round 3 validation — v0.3.0
+# Round 4 validation — v0.4.0
 
-Observed on 2026-10-26 with Node 24.22.1 and npm 11.9.0. The delivery is **source and tests only**. Following the user's latest instruction, automatic CI now runs tests without platform exports or native compilation. No build outputs are included.
+Observed on 2026-10-26 with Node 24.22.1 and npm 11.9.0. This round runs tests only: no platform export, native compilation, APK or binary delivery.
 
-| Check                                            | Observed result                                                                                                                                            |
-| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ESLint                                           | Passed, zero project warnings                                                                                                                              |
-| Prettier                                         | Passed                                                                                                                                                     |
-| Strict TypeScript                                | Passed                                                                                                                                                     |
-| Jest pure/native interactions                    | 188 tests passed across 13 suites                                                                                                                          |
-| Installed Expo SDK dependency matrix             | All four apps passed the offline matrix check                                                                                                              |
-| Browser acceptance, completed earlier this round | 17 passed across all four apps                                                                                                                             |
-| Guarded updater and Git patch rehearsal          | Both reproduced the clean target; conflict, CRLF/formatting, symlink/unsafe paths, damaged payload, temporary-file preservation and rollback checks passed |
-| Unfiltered dependency audit                      | Exit 1; five high entries from two upstream tooling advisories                                                                                             |
+| Check                                   | Observed result                                                                                                   |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Clean locked dependency install         | 1,316 packages installed                                                                                          |
+| ESLint / formatting / strict TypeScript | Passed                                                                                                            |
+| Jest pure/native interactions           | 258 tests across 17 suites passed                                                                                 |
+| Installed Expo SDK matrix               | All four apps passed the offline dependency matrix check                                                          |
+| Project audit                           | App identities, routes, assets, versions, role dependency boundaries and documentation passed                     |
+| Incremental updater / Git patch         | Exact target reproduction, idempotence, CRLF, conflict refusal, payload/path/symlink checks and rollback verified |
+| Unfiltered security audit               | Exit 1: five high entries from the two documented upstream tooling advisories                                     |
 
-The source/native interaction tests cover durable order keys, exact retry bodies, lost and malformed responses, storage failures including receipt commits, concurrent controllers, stale/consumed reviews, disposal, cooldown expiry, pre/post-commit error distinctions, fasting composition, demo dates, address validation, scoped mutations, bilingual forms, native encrypted chunks/isolation and safe calling. The unchanged authentication regression suite remains included.
+The suite includes all prior authentication, Client order/storage and workspace regressions. Mother additions cover real DTO validation, exact EAT deadline and midnight boundaries, current assigned status/ID checks, packaging review, double taps, lost/malformed receipts, stale reads, scoped staff meal selection, daily uniqueness handling, request validation/review, marker-before-POST, storage failure/corruption/isolation, restart recovery, history reconciliation, old identical messages, explicit reminder clearing, Retry-After, disposal, protected route allowlists, Amharic controls and Strict Mode replay.
 
-Browser tests use fixtures for all private requests and mutations. They cover the complete reviewed order, restart/sign-in recovery, concurrent tabs, unavailable storage, explicit refusal recovery, demo purchase, payment details/history, 429 cooldown, inaccessible orders, account security, logout, locale persistence, narrow layouts and public health handling. No production address, order, password, signup or Telegram mutation was performed. Seven relevant API/service/schema files were compared byte-for-byte with the current supplied backend archive (web v0.19.0, Library version 4); the contract matches.
+Private requests use fixtures. No production account, order, meal, ticket, password or Telegram record was mutated. The implementation uses the existing web v0.19.0 Mother workflow routes and services; no backend change or migration is required.
 
-## Earlier verification evidence
+GitHub baseline `f49977f477eccc4b1328064061b950fd0215d865` has a successful tests job. Its 215 tracked files were compared by Git blob hash with Round 3: only the owner's personal ignore rule differed, and it is preserved. No new revision was pushed; hosted CI for Round 4 must be checked after the owner applies and pushes it.
 
-Before the request to stop builds, all twelve Android/iOS/web exports completed and matched the final runtime source; staff bundles contain no Client workflow module. [ROUND3_EXPORT_BUILDS.json](docs/ROUND3_EXPORT_BUILDS.json) records source digests and absence of test fixtures, node-forge and Zod in the product graphs. The Client Android release-preview also compiled before that request. [ROUND3_ANDROID_BUILD.json](docs/ROUND3_ANDROID_BUILD.json) records the inspected package. These are historical text records; the APK and exports are not delivered, and no further builds are required for this source update. The older `ANDROID_BUILDS.json` / `EXPORT_BUILDS.json` describe Round 2 only.
+Browser automation was adjusted for Mother navigation but not rerun: its existing harness requires platform exports, which were excluded at the user's request. New screens are exercised through the React Native interaction suite. Historical Round 3 browser/build observations are retained in [ROUND3_VALIDATION.md](docs/ROUND3_VALIDATION.md); they are not Round 4 acceptance or new build outputs.
 
-## Limits and reproduction
+Actual Android/iOS devices/emulators, native linking/builds, real-account backend integration, accessibility/large-text and human Amharic editorial review remain pending in [ACCEPTANCE.md](docs/ACCEPTANCE.md). Source tests cannot establish those results. See [MOTHER.md](docs/MOTHER.md) for endpoint coverage, recovery limits and server-day rollover behavior. See [DEPENDENCIES.md](docs/DEPENDENCIES.md) for the unsuppressed dependency findings.
 
-The dependency audit is not green. See [DEPENDENCIES.md](docs/DEPENDENCIES.md) and [the raw audit](docs/security-audit-2026-10-26.json). No advisory suppression, incompatible framework downgrade or unreviewed major Zod override is applied.
-
-Native iOS compilation, actual Android/iOS devices/emulators, real account/Telegram acceptance, large-text/screen-reader checks and human Amharic editorial review remain pending in [ACCEPTANCE.md](docs/ACCEPTANCE.md). There is no remote push or hosted CI result to claim. The existing Render/Neon backend is reused, with no API/database migration or new paid service.
-
-Apply after Round 2 v0.2.0 using the guarded updater or Git patch, then run:
+Apply after Round 3 v0.3.0, then run from the repository root:
 
 ```bash
 npm ci
@@ -35,4 +30,4 @@ npm run check
 npm run doctor
 ```
 
-A clean applied-copy installation of 1,315 locked packages, all 188 tests and the four-app offline SDK matrix check passed before packaging. [CLIENT.md](docs/CLIENT.md) explains endpoint coverage, persistence and conservative recovery. Do not delete an uncertain order's saved key merely to start another order.
+Automatic CI remains tests only. Build tools are retained for the owner's manual use; no builds are needed to apply this update.

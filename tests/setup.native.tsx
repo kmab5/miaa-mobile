@@ -5,7 +5,7 @@ export const mockRouter = {
   back: jest.fn(),
   canGoBack: jest.fn(() => true),
 };
-export const mockParams: { module?: string | string[] } = {};
+export const mockParams: { module?: string | string[]; screen?: string | string[] } = {};
 jest.mock('expo-router', () => {
   const React = jest.requireActual<typeof import('react')>('react');
   return {

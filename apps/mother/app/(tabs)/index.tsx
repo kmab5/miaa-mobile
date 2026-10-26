@@ -1,1 +1,1 @@
-export { HomeScreen as default } from '@miaa/shell';
+export { MotherHomeScreen as default } from '@miaa/mother-portal';

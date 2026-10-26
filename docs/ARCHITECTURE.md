@@ -8,6 +8,7 @@ This is an npm workspace containing four Expo/React Native applications. Each ap
 | `packages/api`                                             | Portable bearer transport/contracts from web v0.19.0, plus a public health probe                        |
 | `packages/auth`                                            | Session controller, SecureStore/memory adapters, identity validation and React context                  |
 | `packages/client-portal`                                   | Client DTO validation, screens, journal controller and secure/browser order storage                     |
+| `packages/mother-portal`                                   | Mother DTO validation, queue/meal/request screens, controller and scoped recovery markers               |
 | `packages/config`                                          | Runtime configuration validation and supported role/variant types                                       |
 | `packages/i18n`                                            | English/Amharic dictionaries and device-local language persistence                                      |
 | `packages/ui`                                              | Mi'aa tokens, accessible components, original brand vectors and bundled fonts                           |
@@ -36,8 +37,14 @@ The auth controller owns all token persistence and exposes credential-free state
 
 ## Client workflows
 
-The Client app supplies `ClientProvider` to the shared root’s provider hook, inside authentication. Other apps do not import its workflow package. Its protected `client/[screen]` route maps a fixed list of screens, with order IDs in validated query parameters. Legacy Client module links redirect to these screens. Staff module overviews remain separate.
+The Client app supplies `ClientProvider` to the shared root’s provider hook, inside authentication. Other apps do not import its workflow package. Its protected `client/[screen]` route maps a fixed list of screens, with order IDs in validated query parameters. Legacy Client module links redirect to these screens. The Mother app has its own separate workflow package; Cyclist and Admin module overviews remain separate.
 
 Read hooks abort on blur and ignore stale completions; order-detail data is also bound to its requested route. The backend owns dates, pricing, radius, capacity and permissions. UI dish filtering follows the existing fasting composition to guide choices, while the service validates again at purchase.
 
 The order journal is scoped to authenticated user, backend and build variant, across app version updates. Native drafts use device-only SecureStore chunks and an atomic head; browser previews use localStorage plus Web Locks, independently of memory-only authentication. A journal is committed before any POST. The controller serializes operations, compares the reviewed journal revision under the lock, and consumes each submitted review once. Explicit retries use the saved key/body. Receipts replace resolved draft details. Unknown or archived outcomes never silently create another intention. Details and known refusal boundaries are documented in [CLIENT.md](CLIENT.md).
+
+## Mother workflows
+
+`MotherProvider` is inside authentication and is imported only by the Mother app. A fixed protected route allowlist and legacy aliases expose queue, staff meal and support. The source audit checks role dependency graphs so neither Mother nor Client workflows enter another app through shared dependencies.
+
+A controller owns backend day/dish/ticket responses, read generations, explicit mutations, cooldown and recovery. The clock is observed through state rather than read during rendering. Packaging re-reads authoritative status/deadlines before a POST. Meal writes use the backend's daily uniqueness rule. Support inserts have no idempotency endpoint, so a scoped SecureStore/browser marker is committed before POST; unknown results block another send until history/office review. See [MOTHER.md](MOTHER.md) for the complete contract and limitations.
