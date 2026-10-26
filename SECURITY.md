@@ -6,7 +6,7 @@ Tokens are persisted only through Expo SecureStore on native platforms, isolated
 
 Telegram invite possession permits status checks, not existing-account login. The bot must verify the user's own contact. Existing users must then prove password/OTP ownership. Only Client signup is offered; staff accounts are provisioned by an administrator. Outbound bot links require HTTPS on the exact `t.me` host with the matching start token.
 
-Bootstrap and foreground revalidate with the server before private content is shown. Transient failures lock the workspace and keep credentials for explicit retry. Definitive unauthorized/revoked/expired sessions are removed. Logout removes local access even if remote revocation fails and reports that limitation. Secure-storage deletion failure keeps the app locked; retry attempts cleanup. Epoch checks and serialized writes prevent stale work from restoring cleared sessions. No private profile/business cache or background write-retry queue is included.
+Bootstrap and foreground revalidate with the server before private content is shown. Transient failures lock the workspace and keep credentials for explicit retry. Definitive unauthorized/revoked/expired sessions are removed. Logout removes local access even if remote revocation fails and reports that limitation. Secure-storage deletion failure keeps the app locked; retry attempts cleanup. Epoch checks and serialized writes prevent stale work from restoring cleared sessions. No private profile/business-response cache or background write-retry queue is included. Pending order intentions are the explicit persistence exception described below.
 
 HTTPS is mandatory in preview/production. Development permits explicit localhost/private-network HTTP only. Requests omit cookies, reject redirects and never accept an absolute API path. Keep Metro restricted to localhost/USB, or a trusted private LAN when needed. Health/options are public reachability/capability checks, not authorization or migration checks.
 
@@ -14,4 +14,14 @@ Keep environment secrets, keystores, test signing artifacts, passwords and machi
 
 ## Dependency audit
 
-`npm run security:audit` remains unfiltered and currently exits 1 for one unresolved upstream tooling advisory affecting four entries. See [DEPENDENCIES.md](docs/DEPENDENCIES.md), its retained raw report and [VALIDATION.md](VALIDATION.md). Do not suppress findings, fabricate package versions, force incompatible framework downgrades or claim the security audit is green. The prior braces advisory was withdrawn upstream, not patched by this release.
+`npm run security:audit` remains unfiltered and currently exits 1 for two unresolved upstream tooling advisories affecting five entries. See [DEPENDENCIES.md](docs/DEPENDENCIES.md), its retained raw report and [VALIDATION.md](VALIDATION.md). Do not suppress findings, fabricate package versions, force incompatible framework downgrades or claim the security audit is green. The prior braces advisory was withdrawn upstream, not patched by this release.
+
+## Pending Client orders
+
+Before sending, the exact order key/body is committed to an owner/variant/backend-scoped journal. Native storage uses device-only SecureStore without shared access groups or biometric prompts; UTF-8 chunks stay below historical per-value limits. The manifest is committed only after every chunk is written. Previous committed chunks are removed best-effort after replacement. Native backup rules exclude SecureStore. No auth token, password or OTP is stored in this journal.
+
+The browser preview persists pending order details (including delivery coordinates/notes) in localStorage; the checkout explains this. Web Locks serialize access across tabs. Authentication still uses memory only. Browsers without secure-context Web Locks, blocked storage, malformed journals and missing chunks fail closed for new orders; other read-only screens remain available. A corrupt journal is never treated as an empty one.
+
+Pending intentions survive logout/restart for recovery only after the same account signs back in. Unknown outcomes retain their keys; generic 404/409 can occur after a backend commit and cannot unlock a new order. Recognized pre-commit refusals permit an explicit fresh review. Do not uninstall/clear data or change preview signing while an outcome is uncertain; resolve it first with an administrator using its recovery reference. These controls prevent duplicate retries for a saved intention; they cannot merge independently intended purchases made on different devices or recover deleted device data.
+
+No bank/card processor, map SDK, location permission, analytics service or new paid infrastructure is introduced. Payment instructions are rendered as text from existing organization settings; no server-supplied payment URL is opened automatically. Cyclist calling uses only a validated `tel:` number while a delivery is on its way.

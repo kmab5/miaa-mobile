@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ComponentType, type ReactNode } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { Stack, type ErrorBoundaryProps } from 'expo-router';
 import Constants from 'expo-constants';
@@ -6,13 +6,22 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { readAppConfiguration, type AppRole } from '@miaa/config';
+import { readAppConfiguration, type AppRole, type AppConfiguration } from '@miaa/config';
 import { LocaleProvider, useTranslation } from '@miaa/i18n';
 import { AppText, Button, Brand, colors, fontAssets, FontAvailabilityProvider } from '@miaa/ui';
 import { AuthProvider, useAuth } from '@miaa/auth';
 import { AppContext } from './context';
 void SplashScreen.preventAutoHideAsync().catch(() => undefined);
-export function AppRoot({ role }: { role: AppRole }) {
+function PassThrough({ children }: { children: ReactNode; config: AppConfiguration }) {
+  return children;
+}
+export function AppRoot({
+  role,
+  providers: Providers = PassThrough,
+}: {
+  role: AppRole;
+  providers?: ComponentType<{ config: AppConfiguration; children: ReactNode }>;
+}) {
   const configuration = useMemo(
     () => readAppConfiguration(Constants.expoConfig?.extra, role),
     [role],
@@ -22,14 +31,16 @@ export function AppRoot({ role }: { role: AppRole }) {
       <AppContext.Provider value={configuration}>
         <LocaleProvider>
           <AuthProvider config={configuration}>
-            <RootContent />
+            <Providers config={configuration}>
+              <RootContent role={role} />
+            </Providers>
           </AuthProvider>
         </LocaleProvider>
       </AppContext.Provider>
     </SafeAreaProvider>
   );
 }
-function RootContent() {
+function RootContent({ role }: { role: AppRole }) {
   const auth = useAuth();
   const { ready, t, locale } = useTranslation();
   const [fontsLoaded, fontError] = useFonts(fontAssets);
@@ -66,6 +77,7 @@ function RootContent() {
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="modules/[module]" />
           <Stack.Screen name="security" />
+          {role === 'client' ? <Stack.Screen name="client/[screen]" /> : null}
         </Stack.Protected>
         <Stack.Protected guard={auth.phase !== 'signedIn'}>
           <Stack.Screen name="sign-in" />

@@ -69,7 +69,7 @@ for (const role of roles) {
   }
 }
 assert(themedIcons.size === roles.length, 'Themed icons must distinguish all four roles');
-for (const name of ['api', 'auth', 'config', 'i18n', 'ui', 'shell']) {
+for (const name of ['api', 'auth', 'client-portal', 'config', 'i18n', 'ui', 'shell']) {
   const p = JSON.parse(readFileSync(`packages/${name}/package.json`, 'utf8'));
   assert(
     p.version === pkg.version && p.private === true && existsSync(`packages/${name}/${p.main}`),

@@ -1,0 +1,127 @@
+{
+  "version": "0.3.0",
+  "round": 3,
+  "verifiedAt": "2026-10-26",
+  "exports": [
+    {
+      "role": "admin",
+      "platform": "android",
+      "ownedRuntimeModulesMatchingSource": 41,
+      "requiredModulesPresent": true,
+      "foreignRoleRoutesPresent": false,
+      "clientWorkflowsInStaffBundle": false,
+      "advisoryPackagesInJavaScriptGraph": [],
+      "ownedSourceDigestSha256": "921229feb2ff6c481e1c1d80d4ef89c62f2dc66f6c17acc513ee766599de82e5"
+    },
+    {
+      "role": "admin",
+      "platform": "ios",
+      "ownedRuntimeModulesMatchingSource": 41,
+      "requiredModulesPresent": true,
+      "foreignRoleRoutesPresent": false,
+      "clientWorkflowsInStaffBundle": false,
+      "advisoryPackagesInJavaScriptGraph": [],
+      "ownedSourceDigestSha256": "921229feb2ff6c481e1c1d80d4ef89c62f2dc66f6c17acc513ee766599de82e5"
+    },
+    {
+      "role": "admin",
+      "platform": "web",
+      "ownedRuntimeModulesMatchingSource": 42,
+      "requiredModulesPresent": true,
+      "foreignRoleRoutesPresent": false,
+      "clientWorkflowsInStaffBundle": false,
+      "advisoryPackagesInJavaScriptGraph": [],
+      "ownedSourceDigestSha256": "7e11e98629b73a8cc104784899827704612faa3e19e5c727a72adfc9830850f9"
+    },
+    {
+      "role": "mother",
+      "platform": "android",
+      "ownedRuntimeModulesMatchingSource": 41,
+      "requiredModulesPresent": true,
+      "foreignRoleRoutesPresent": false,
+      "clientWorkflowsInStaffBundle": false,
+      "advisoryPackagesInJavaScriptGraph": [],
+      "ownedSourceDigestSha256": "9db36b79c162a80257f56ede1fa27e74482d35e97cc841ab7deebed535121b4a"
+    },
+    {
+      "role": "mother",
+      "platform": "ios",
+      "ownedRuntimeModulesMatchingSource": 41,
+      "requiredModulesPresent": true,
+      "foreignRoleRoutesPresent": false,
+      "clientWorkflowsInStaffBundle": false,
+      "advisoryPackagesInJavaScriptGraph": [],
+      "ownedSourceDigestSha256": "9db36b79c162a80257f56ede1fa27e74482d35e97cc841ab7deebed535121b4a"
+    },
+    {
+      "role": "mother",
+      "platform": "web",
+      "ownedRuntimeModulesMatchingSource": 42,
+      "requiredModulesPresent": true,
+      "foreignRoleRoutesPresent": false,
+      "clientWorkflowsInStaffBundle": false,
+      "advisoryPackagesInJavaScriptGraph": [],
+      "ownedSourceDigestSha256": "cefe03d82b4fe40f0e0bcb19c77710ca6d0cdd224a7c6999ef2f51a3f168eb5d"
+    },
+    {
+      "role": "cyclist",
+      "platform": "android",
+      "ownedRuntimeModulesMatchingSource": 41,
+      "requiredModulesPresent": true,
+      "foreignRoleRoutesPresent": false,
+      "clientWorkflowsInStaffBundle": false,
+      "advisoryPackagesInJavaScriptGraph": [],
+      "ownedSourceDigestSha256": "9a5cdce4ee13057273fe6470d47603892b84fc0db938515054ba452a9643e221"
+    },
+    {
+      "role": "cyclist",
+      "platform": "ios",
+      "ownedRuntimeModulesMatchingSource": 41,
+      "requiredModulesPresent": true,
+      "foreignRoleRoutesPresent": false,
+      "clientWorkflowsInStaffBundle": false,
+      "advisoryPackagesInJavaScriptGraph": [],
+      "ownedSourceDigestSha256": "9a5cdce4ee13057273fe6470d47603892b84fc0db938515054ba452a9643e221"
+    },
+    {
+      "role": "cyclist",
+      "platform": "web",
+      "ownedRuntimeModulesMatchingSource": 42,
+      "requiredModulesPresent": true,
+      "foreignRoleRoutesPresent": false,
+      "clientWorkflowsInStaffBundle": false,
+      "advisoryPackagesInJavaScriptGraph": [],
+      "ownedSourceDigestSha256": "b4c44a24e697c52315f3e164fe12eda1b4e35dcb63610c99304e2f706d521f07"
+    },
+    {
+      "role": "client",
+      "platform": "android",
+      "ownedRuntimeModulesMatchingSource": 50,
+      "requiredModulesPresent": true,
+      "foreignRoleRoutesPresent": false,
+      "clientWorkflowsInStaffBundle": false,
+      "advisoryPackagesInJavaScriptGraph": [],
+      "ownedSourceDigestSha256": "6e2cf0ffba124201f99ec72a3ac39af9f9012669cec3672a384298a27e411ca2"
+    },
+    {
+      "role": "client",
+      "platform": "ios",
+      "ownedRuntimeModulesMatchingSource": 50,
+      "requiredModulesPresent": true,
+      "foreignRoleRoutesPresent": false,
+      "clientWorkflowsInStaffBundle": false,
+      "advisoryPackagesInJavaScriptGraph": [],
+      "ownedSourceDigestSha256": "6e2cf0ffba124201f99ec72a3ac39af9f9012669cec3672a384298a27e411ca2"
+    },
+    {
+      "role": "client",
+      "platform": "web",
+      "ownedRuntimeModulesMatchingSource": 51,
+      "requiredModulesPresent": true,
+      "foreignRoleRoutesPresent": false,
+      "clientWorkflowsInStaffBundle": false,
+      "advisoryPackagesInJavaScriptGraph": [],
+      "ownedSourceDigestSha256": "2d2cd611a5036fc0ae7f26faf017b47cd8c51f4863d42f8a616adb0e5679d58f"
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "version": "0.3.0",
+  "round": 3,
+  "verifiedAt": "2026-10-26",
+  "role": "client",
+  "file": "miaa-client-preview-v0.3.0.apk",
+  "bytes": 33130309,
+  "sha256": "075ae8bc7700afad893d999bddb1f1cc4eae6e7f3a6374ee18935ea353bcd265",
+  "applicationId": "com.kmab.miaa.client.preview",
+  "scheme": "miaa-client-preview",
+  "apiOrigin": "https://miaa.onrender.com",
+  "versionCode": 3,
+  "minimumSdk": 24,
+  "targetSdk": 36,
+  "compileSdk": 37,
+  "abi": ["arm64-v8a"],
+  "signatureVerified": true,
+  "signerCertificateSha256": "fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c",
+  "productionSigning": false,
+  "standaloneJsBundle": true,
+  "bundleSha256": "6910db69a3c55ac365ce2a0a3d9e096d652f3b99de64c204202139062b20828f",
+  "nativeModules": {
+    "ExpoCrypto": {
+      "nativeBindingInDex": true,
+      "registeredModuleClassInDex": true
+    },
+    "ExpoSecureStore": {
+      "nativeBindingInDex": true,
+      "registeredModuleClassInDex": true
+    }
+  },
+  "secureStoreBackupExclusions": [
+    {
+      "attribute": "fullBackupContent",
+      "resource": "res/-K.xml",
+      "excludesSecureStore": true
+    },
+    {
+      "attribute": "dataExtractionRules",
+      "resource": "res/Hq.xml",
+      "excludesSecureStore": true
+    }
+  ],
+  "cleartextTraffic": false,
+  "debuggable": false,
+  "permissions": [
+    "android.permission.INTERNET",
+    "android.permission.VIBRATE",
+    "android.permission.USE_BIOMETRIC",
+    "android.permission.USE_FINGERPRINT",
+    "com.kmab.miaa.client.preview.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "bundledFontSha256": {
+    "Poppins-Regular.ttf": "707fdc5c8bab57a90061c6a8ed7b70d5ffb82fc810e994e79f90bace890c255a",
+    "NotoSansEthiopic-Regular.ttf": "321ff186e0f066a46257c3008e8a22070720350a9d17f8a32d0d3da53f52e7a2",
+    "NotoSansEthiopic-SemiBold.ttf": "03430809d926c4c048af2ef900d2a041d34894ea2d8fb13f2219b2315199938f",
+    "Poppins-SemiBold.ttf": "248c0244b350ec68880996aa6be6d7796274b49992d5fcbbefe251906aa4ea36"
+  },
+  "bundledFontLicenseNotice": true,
+  "ownedRuntimeModulesMatchingSource": 50,
+  "ownedSourceDigestSha256": "6e2cf0ffba124201f99ec72a3ac39af9f9012669cec3672a384298a27e411ca2",
+  "matchesFinalAndroidExportSources": true,
+  "advisoryPackagesInJavaScriptGraph": [],
+  "testFixturesInJavaScriptGraph": false,
+  "physicalDeviceTested": false,
+  "emulatorTested": false,
+  "nativeIosCompiled": false,
+  "toolchain": {
+    "jdk": "Temurin 17.0.21+9",
+    "gradle": "9.4.1",
+    "ndk": "27.1.12297006",
+    "cmake": "3.22.1",
+    "node": "24.22.1",
+    "npm": "11.9.0"
+  }
+}

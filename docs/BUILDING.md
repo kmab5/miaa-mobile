@@ -4,7 +4,7 @@ Run commands in the repository root. The scripts use Node process APIs rather th
 
 ## Prerequisites
 
-- Node 24.19+ on the 24 release line; npm 11.9.0 (recorded in `.nvmrc`, `.node-version` and `packageManager`).
+- Node 24.22.1+ on the 24 release line; npm 11.9.0 (recorded in `.nvmrc`, `.node-version` and `packageManager`).
 - For Android: JDK 17, Android SDK command-line tools/platform tools, Platform 37.0, Build Tools 37.0.0 and 36.0.0 (used by transitive libraries), NDK 27.1.12297006 and CMake 3.22.1. The Android Gradle plugin may install missing components after accepting SDK licenses. The generated Gradle wrapper selects its pinned Gradle version; no global Gradle installation is needed.
 - Add the SDK’s `platform-tools` directory to PATH to use `adb` directly.
 - Set `ANDROID_HOME` to the SDK directory. Set `JAVA_HOME` to your JDK if `java` on PATH points elsewhere. Do not commit either machine-specific path.
@@ -41,21 +41,23 @@ npm run build:android -- cyclist preview
 npm run build:android -- client preview
 ```
 
-Or run `npm run verify:android` to build all four sequentially. Output: `artifacts/miaa-APP-preview-v0.2.0.apk`. These APKs bundle JS and assets and do not need the Metro server. They use Expo's test signing configuration and a `.preview` application ID; they are not production-signed releases and must not be uploaded as final store builds.
+Or run `npm run verify:android` to build all four sequentially. Output: `artifacts/miaa-APP-preview-v0.3.0.apk`. These APKs bundle JS and assets and do not need the Metro server. They use Expo's test signing configuration and a `.preview` application ID; they are not production-signed releases and must not be uploaded as final store builds.
 
 Native builds use one Gradle worker and disable project parallelism by default to control memory use. Run exports and native compilation separately. On a machine with spare memory, set `MIAA_ANDROID_BUILD_WORKERS` to an integer from 1 to 8 to change the Gradle worker count. CI explicitly selects ARM64 previews, matching the locally inspected packages.
 
 By default the script builds `arm64-v8a,x86_64`, covering current physical phones and common emulators. To reduce a local build to ARM64, set `MIAA_ANDROID_ARCHITECTURES=arm64-v8a` in your shell before invoking the same command. Never assume an ARM64-only APK can run on an x86 emulator.
 
-Install using the Android file installer or `adb install -r artifacts/miaa-client-preview-v0.2.0.apk` (substitute app name). First installation may require allowing installs from your chosen file manager. Test apps cannot overwrite production apps because their IDs differ. A signature mismatch on an existing test installation requires uninstalling that test app first, which removes its local preferences.
+Install using the Android file installer or `adb install -r artifacts/miaa-client-preview-v0.3.0.apk` (substitute app name). First installation may require allowing installs from your chosen file manager. Test apps cannot overwrite production apps because their IDs differ. A signature mismatch on an existing test installation requires uninstalling that test app first, which removes local app data. Resolve any uncertain pending order with an administrator before uninstalling or changing the signing key.
 
 The CNG finalization plugin normalizes the known package-refactor/splash-template duplicate entry points, preserving splash registration. It refuses conflicting native edits. The build script verifies a single correctly namespaced MainActivity/MainApplication pair before Gradle.
 
 The script clears the selected app’s generated image cache, regenerates `apps/APP/android` with Expo CNG and checks the actual generated themed icon before compiling. Do not edit generated files by hand. It invokes Java's Gradle wrapper directly, including on Windows, to avoid shell/path quoting problems. SDK/license/download errors fail the command; no successful APK is reported unless Gradle completed and the output file exists. A previous artifact does not prove the current build passed.
 
-## GitHub build artifacts
+## Tests-only CI and delivery
 
-After applying and pushing this repository, the **Mobile checks** workflow runs source/browser checks and builds all four Android preview apps. Open the completed run under GitHub Actions and download the `miaa-APP-preview` artifacts. They contain the standalone test APKs and are retained for seven days. This uses the repository’s CI runner; no Expo/EAS build account is required. A workflow included in the ZIP is not evidence that a hosted run has already passed—check the actual run after pushing.
+The **Mobile tests** workflow runs `npm ci`, `npm run check` and `npm run doctor` on pushes, pull requests and manual dispatch. It does not export platforms, compile native apps or upload APKs. Incremental deliveries contain source updates and test results only, following the user's 2026-10-26 instruction.
+
+The native commands above are retained for the owner's manual use. Browser tests require existing web exports and Chromium; running them does not imply that a new platform build should be prepared automatically. Earlier build records are historical observations, not files included in this source update. Hosted CI can only be called green after the actual workflow runs on the pushed changes.
 
 ## Development with Metro
 

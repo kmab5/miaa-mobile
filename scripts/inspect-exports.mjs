@@ -28,6 +28,8 @@ cli(() => {
           );
           if (!match) continue;
           const relative = match[1];
+          if (role !== 'client' && relative.startsWith('packages/client-portal/'))
+            throw new Error(`${role}/${platform} contains Client workflows.`);
           if (relative.startsWith('apps/') && !relative.startsWith(`apps/${role}/`))
             throw new Error(`${role}/${platform} contains another app's route: ${relative}`);
           const original = join(root, relative);
@@ -43,6 +45,20 @@ cli(() => {
         'packages/auth/src/validation.ts',
         'packages/shell/src/sign-in.tsx',
         'packages/shell/src/security.tsx',
+        ...(role === 'client'
+          ? [
+              'apps/client/app/client/[screen].tsx',
+              ...[
+                'orders.ts',
+                'storage.ts',
+                'validation.ts',
+                'provider.tsx',
+                'screens.tsx',
+                'components.tsx',
+                'text.ts',
+              ].map((file) => `packages/client-portal/src/${file}`),
+            ]
+          : []),
       ])
         if (!owned.has(required)) throw new Error(`${role}/${platform} omitted ${required}`);
       console.log(`${role}/${platform}: ${owned.size} app modules match final source.`);

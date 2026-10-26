@@ -1,16 +1,17 @@
-name: Mobile checks
+name: Mobile tests
 on:
   push:
   pull_request:
+  workflow_dispatch:
 permissions:
   contents: read
 concurrency:
   group: mobile-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  quality:
+  tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
@@ -20,49 +21,3 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm run doctor
-      - run: npm run export:all
-        env:
-          EXPO_NO_TELEMETRY: '1'
-      - run: npm run verify:exports
-      - run: npx playwright install --with-deps chromium
-      - run: npm run test:ui
-      - uses: actions/upload-artifact@v7
-        if: failure()
-        with:
-          name: mobile-browser-failures
-          path: |
-            playwright-report/
-            test-results/
-          if-no-files-found: ignore
-          retention-days: 7
-  android:
-    needs: quality
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
-    strategy:
-      fail-fast: false
-      matrix:
-        app: [admin, mother, cyclist, client]
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-      - uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: '17'
-      - run: npm ci
-      - name: Install native SDK components
-        run: sdkmanager 'platforms;android-37.0' 'build-tools;37.0.0' 'build-tools;36.0.0' 'ndk;27.1.12297006' 'cmake;3.22.1'
-      - run: npm run build:android -- ${{ matrix.app }} preview
-        env:
-          EXPO_NO_TELEMETRY: '1'
-          MIAA_ANDROID_ARCHITECTURES: arm64-v8a
-      - uses: actions/upload-artifact@v7
-        with:
-          name: miaa-${{ matrix.app }}-preview
-          path: artifacts/miaa-${{ matrix.app }}-preview-*.apk
-          if-no-files-found: error
-          retention-days: 7

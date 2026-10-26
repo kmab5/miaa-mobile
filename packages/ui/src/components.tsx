@@ -116,6 +116,8 @@ export function Button({
   busy = false,
   language,
   disabled,
+  accessibilityRole = 'button',
+  accessibilityState,
   ...props
 }: Omit<PressableProps, 'style' | 'children'> & {
   label: string;
@@ -129,9 +131,9 @@ export function Button({
       {...props}
       onPress={onPress}
       disabled={disabled || busy}
-      accessibilityRole="button"
+      accessibilityRole={accessibilityRole}
       accessibilityLabel={label}
-      accessibilityState={{ disabled: Boolean(disabled || busy), busy }}
+      accessibilityState={{ ...accessibilityState, disabled: Boolean(disabled || busy), busy }}
       aria-disabled={Boolean(disabled || busy)}
       aria-busy={busy}
       style={({ pressed }) => [

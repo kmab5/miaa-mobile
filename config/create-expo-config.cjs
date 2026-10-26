@@ -30,12 +30,12 @@ module.exports = function createExpoConfig(role) {
     ios: {
       bundleIdentifier: app.applicationId + suffix,
       supportsTablet: true,
-      buildNumber: '2',
+      buildNumber: '3',
       infoPlist: { ITSAppUsesNonExemptEncryption: false },
     },
     android: {
       package: app.applicationId + suffix,
-      versionCode: 2,
+      versionCode: 3,
       adaptiveIcon: {
         foregroundImage: './assets/adaptive-icon.png',
         backgroundColor: '#ffffff',

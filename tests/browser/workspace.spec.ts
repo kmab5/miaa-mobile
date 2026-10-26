@@ -49,6 +49,18 @@ for (const [index, app] of apps.entries()) {
         }),
       }),
     );
+    await page.route('**/api/v1/client/**', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          'Access-Control-Allow-Methods': 'GET,OPTIONS',
+        },
+        body: JSON.stringify({ data: [] }),
+      }),
+    );
     await page.goto(origin);
     await page.getByLabel('Phone number or email', { exact: true }).fill('0911111111');
     await page.getByLabel('Password', { exact: true }).fill('test-password');
