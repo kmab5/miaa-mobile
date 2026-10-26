@@ -1,15 +1,17 @@
 # Security boundaries
 
-No private account data or authenticated request is used by the Round 1 preview. The sole network action is a user-initiated public health probe. Build configuration rejects wrong-role identities and insecure nonlocal origins. HTTPS is mandatory in preview/production. Roles will be authorized by the backend, not by installation of a particular app.
+The four native apps use the existing Mi'aa bearer API. Every login/OTP request includes the installed role; runtime session validation checks the returned role, identity, token and expiry. The backend remains responsible for authorization, active accounts and active linked operational records. Protected routes only prevent local navigation into authenticated screens.
 
-Only non-sensitive language preferences use AsyncStorage. Never store bearer tokens, passwords, Telegram invites or signing secrets there. Secure credential storage and authentication are Round 2. Keep `.env.local`, keystores, `build-key`, signing passwords, service credentials and machine-specific SDK paths out of Git. Every `EXPO_PUBLIC_*` value is public, compiled into the app.
+Tokens are persisted only through Expo SecureStore on native platforms, isolated by role, variant and backend origin. The browser preview stores them in memory only and signs out on reload. Only non-sensitive language preferences use AsyncStorage. Passwords, OTPs, invites and signing secrets must never be persisted there or placed in route parameters. See [authentication behavior](docs/AUTHENTICATION.md) for session races, failure states and acceptance boundaries.
 
-Errors displayed in the product do not expose raw exceptions, stack traces, database details or tokens. Connection retries are explicit and cancellable. A positive health result is not an authorization or database-integrity check.
+Telegram invite possession permits status checks, not existing-account login. The bot must verify the user's own contact. Existing users must then prove password/OTP ownership. Only Client signup is offered; staff accounts are provisioned by an administrator. Outbound bot links require HTTPS on the exact `t.me` host with the matching start token.
+
+Bootstrap and foreground revalidate with the server before private content is shown. Transient failures lock the workspace and keep credentials for explicit retry. Definitive unauthorized/revoked/expired sessions are removed. Logout removes local access even if remote revocation fails and reports that limitation. Secure-storage deletion failure keeps the app locked; retry attempts cleanup. Epoch checks and serialized writes prevent stale work from restoring cleared sessions. No private profile/business cache or background write-retry queue is included.
+
+HTTPS is mandatory in preview/production. Development permits explicit localhost/private-network HTTP only. Requests omit cookies, reject redirects and never accept an absolute API path. Keep Metro restricted to localhost/USB, or a trusted private LAN when needed. Health/options are public reachability/capability checks, not authorization or migration checks.
+
+Keep environment secrets, keystores, test signing artifacts, passwords and machine-specific SDK paths out of Git. Every public Expo/build configuration value is compiled into the app. Product errors omit raw exceptions, backend messages, credentials and stack traces. Test-only preview signing is not production signing.
 
 ## Dependency audit
 
-`npm run security:audit` runs the unfiltered npm advisory audit. The release validation records its actual exit status and unresolved advisories. Do not suppress a new finding, downgrade the framework to an incompatible ancient release suggested by automated remediation, edit the lockfile to fabricate versions, or claim a clean audit while advisories remain. Compatible patched transitive dependencies are preferred and must be verified with exports/native builds.
-
-At initial installation, published advisories affected transitive build/test tooling, including `braces`, `node-forge`, `sprintf-js`, `uuid` and `esbuild`. Compatible overrides update UUID/esbuild and replace the legacy YAML loader chain to remove sprintf-js. Some advisories currently have no published upstream patched release; the final validation must distinguish those from resolved findings. See [dependency details and the retained audit report](docs/DEPENDENCIES.md) and [VALIDATION.md](VALIDATION.md).
-
-Keep Metro restricted to localhost/USB for routine development; expose it to a LAN only when necessary on a trusted private network. Test preview APKs have distinct application IDs and test-only signing, and must not be presented as production-signed applications.
+`npm run security:audit` remains unfiltered and currently exits 1 for one unresolved upstream tooling advisory affecting four entries. See [DEPENDENCIES.md](docs/DEPENDENCIES.md), its retained raw report and [VALIDATION.md](VALIDATION.md). Do not suppress findings, fabricate package versions, force incompatible framework downgrades or claim the security audit is green. The prior braces advisory was withdrawn upstream, not patched by this release.

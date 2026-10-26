@@ -4,6 +4,8 @@ export interface TokenStorage {
   get(): Promise<string | null>;
   set(token: string): Promise<void>;
   clear(): Promise<void>;
+  /** Atomic invalidation for session owners with concurrent operations. */
+  clearIfCurrent?(expected: string): Promise<void>;
 }
 export class MobileApiError extends Error {
   constructor(
@@ -30,6 +32,7 @@ export type MobileApiOptions = {
   storage: TokenStorage;
   fetch?: typeof fetch;
   timeoutMs?: number;
+  allowDevelopmentHttp?: boolean;
 };
 /** No automatic write retries. A Render cold start gets 90 seconds by default. */
 export function createMobileApi(options: MobileApiOptions) {
@@ -41,7 +44,14 @@ export function createMobileApi(options: MobileApiOptions) {
     url.hash ||
     url.pathname !== '/' ||
     (url.protocol !== 'https:' &&
-      !(url.protocol === 'http:' && ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname)))
+      !(
+        url.protocol === 'http:' &&
+        (['localhost', '127.0.0.1', '[::1]'].includes(url.hostname) ||
+          (options.allowDevelopmentHttp === true &&
+            /^(?:127\.\d+\.\d+\.\d+|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(?:1[6-9]|2\d|3[01])\.\d+\.\d+)$/.test(
+              url.hostname,
+            )))
+      ))
   )
     throw new Error('Use an HTTPS origin, or HTTP localhost for development.');
   const origin = url.origin;
@@ -75,7 +85,9 @@ export function createMobileApi(options: MobileApiOptions) {
       const raw: unknown = await res.json().catch(() => null);
       if (!res.ok) {
         if (res.status === 401 && token && (await options.storage.get()) === token)
-          await options.storage.clear();
+          await (options.storage.clearIfCurrent
+            ? options.storage.clearIfCurrent(token)
+            : options.storage.clear());
         const envelope = raw as ApiFailure | null;
         const error = envelope?.error;
         throw new MobileApiError(

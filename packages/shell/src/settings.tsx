@@ -17,6 +17,7 @@ import {
   SectionTitle,
   radius,
 } from '@miaa/ui';
+import { useAuth } from '@miaa/auth';
 import { useAppConfiguration } from './context';
 import { workspaces } from './catalog';
 type Connection = 'idle' | 'checking' | 'connected' | 'failed' | 'cancelled';
@@ -100,6 +101,7 @@ export function ConnectionCard() {
   );
 }
 export function SettingsScreen() {
+  const { user } = useAuth();
   const router = useRouter();
   const { role, appVersion } = useAppConfiguration();
   const { t, locale, setLocale, persistenceError } = useTranslation();
@@ -118,7 +120,9 @@ export function SettingsScreen() {
           pressed && styles.pressed,
         ]}
       >
-        <AppText weight="semibold">{label}</AppText>
+        <AppText weight="semibold" language={value}>
+          {label}
+        </AppText>
         {selected ? <Icon name="check" size={18} /> : <View style={styles.unchecked} />}
       </Pressable>
     );
@@ -153,6 +157,17 @@ export function SettingsScreen() {
             </AppText>
           ) : null}
         </Card>
+        {user ? (
+          <Card>
+            <SectionTitle>{t('auth.security')}</SectionTitle>
+            <AppText>{user.phoneNumber}</AppText>
+            <Button
+              label={t('auth.security')}
+              icon="admin"
+              onPress={() => router.push('/security')}
+            />
+          </Card>
+        ) : null}
         <ConnectionCard />
         <Card style={styles.about}>
           <AppText weight="semibold">{t('settings.about')}</AppText>

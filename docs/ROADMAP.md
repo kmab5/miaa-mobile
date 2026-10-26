@@ -13,7 +13,7 @@ Four separate apps share one API, design system and translation layer. Android i
 | 7     | Admin finance, payouts, stock, analytics, archive and restoration                                                      | Correct backend-derived reports and preserved history                                    |
 | 8     | Full cross-app verification, poor connections, accessibility, release signing/versioning and acceptance                | Reproducible release builds and verified device workflows                                |
 
-Round 1 deliberately has no login form, fake dashboard totals, sample customer records, authenticated requests or simulated successful business actions. Workspace links open honest overview screens. The only server request is the explicit, cancellable public health check. Navigation, language persistence and connection feedback work now.
+Rounds 1 and 2 are implemented. Password/Telegram sign-in, verified Client signup, secure sessions and account security work against the existing API contract. Authenticated workspace modules are honest overviews until Rounds 3–7; no sample customer records, invented totals or simulated successful business actions are shown.
 
 Payments remain off-platform. Pending-payment deliveries stay operational. Deleted records retain history while active dependent work stops. Restoration never silently restarts cancelled work. Those rules belong in the backend, not duplicated in native screens.
 

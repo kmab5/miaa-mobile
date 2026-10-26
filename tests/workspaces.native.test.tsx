@@ -1,5 +1,6 @@
 import { beforeEach, describe, it, expect, jest } from '@jest/globals';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react-native';
+import { AuthContext, createAuthController } from '@miaa/auth';
 import { AppContext } from '../packages/shell/src/context';
 import { HomeScreen, WorkspaceScreen, ModuleScreen } from '../packages/shell/src/screens';
 import { SettingsScreen } from '../packages/shell/src/settings';
@@ -27,9 +28,21 @@ function storage(): PreferenceStorage {
 async function open(element: React.ReactNode, role: AppRole = 'client', preferences = storage()) {
   const result = await render(
     <AppContext.Provider value={configuration(role)}>
-      <LocaleProvider defaultLocale="en" storage={preferences}>
-        {element}
-      </LocaleProvider>
+      <AuthContext.Provider
+        value={createAuthController({
+          role,
+          origin: 'https://miaa.example',
+          storage: {
+            get: async () => null,
+            set: async () => undefined,
+            clear: async () => undefined,
+          },
+        })}
+      >
+        <LocaleProvider defaultLocale="en" storage={preferences}>
+          {element}
+        </LocaleProvider>
+      </AuthContext.Provider>
     </AppContext.Provider>,
   );
   return { ...result, preferences };
@@ -47,7 +60,7 @@ describe('four independent workspaces', () => {
       expect(screen.getByRole('header', { name: en[workspaces[role].headline] })).toBeOnTheScreen();
       await fireEvent.press(screen.getByRole('button', { name: en['common.openWorkspace'] }));
       expect(mockRouter.push).toHaveBeenCalledWith('/workspace');
-      expect(screen.getByText(en['common.noAccount'])).toBeOnTheScreen();
+      expect(screen.getByText(en['auth.signedIn'])).toBeOnTheScreen();
     },
   );
   it.each(roles)('%s exposes every planned module as a working route', async (role) => {

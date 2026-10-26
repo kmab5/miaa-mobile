@@ -9,6 +9,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { readAppConfiguration, type AppRole } from '@miaa/config';
 import { LocaleProvider, useTranslation } from '@miaa/i18n';
 import { AppText, Button, Brand, colors, fontAssets, FontAvailabilityProvider } from '@miaa/ui';
+import { AuthProvider, useAuth } from '@miaa/auth';
 import { AppContext } from './context';
 void SplashScreen.preventAutoHideAsync().catch(() => undefined);
 export function AppRoot({ role }: { role: AppRole }) {
@@ -20,13 +21,16 @@ export function AppRoot({ role }: { role: AppRole }) {
     <SafeAreaProvider>
       <AppContext.Provider value={configuration}>
         <LocaleProvider>
-          <RootContent />
+          <AuthProvider config={configuration}>
+            <RootContent />
+          </AuthProvider>
         </LocaleProvider>
       </AppContext.Provider>
     </SafeAreaProvider>
   );
 }
 function RootContent() {
+  const auth = useAuth();
   const { ready, t, locale } = useTranslation();
   const [fontsLoaded, fontError] = useFonts(fontAssets);
   const [fontTimeout, setFontTimeout] = useState(false);
@@ -58,8 +62,15 @@ function RootContent() {
           },
         }}
       >
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="modules/[module]" />
+        <Stack.Protected guard={auth.phase === 'signedIn'}>
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="modules/[module]" />
+          <Stack.Screen name="security" />
+        </Stack.Protected>
+        <Stack.Protected guard={auth.phase !== 'signedIn'}>
+          <Stack.Screen name="sign-in" />
+        </Stack.Protected>
+        <Stack.Screen name="licenses" />
         <Stack.Screen name="+not-found" />
       </Stack>
     </FontAvailabilityProvider>

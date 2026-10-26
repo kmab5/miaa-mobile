@@ -33,8 +33,15 @@ for (const role of roles) {
     'modules/[module].tsx',
     '+not-found.tsx',
     'licenses.tsx',
+    'sign-in.tsx',
+    'security.tsx',
   ])
     assert(existsSync(join(dir, 'app', path)), `${role}: missing ${path}`);
+  assert(
+    p.dependencies['expo-secure-store'] === '58.0.2' &&
+      p.dependencies['@miaa/auth'] === pkg.version,
+    `${role}: missing authentication/native dependency`,
+  );
   assert(!ids.has(apps[role].applicationId), `${role}: duplicate app identifier`);
   ids.add(apps[role].applicationId);
   for (const [name, size] of [
@@ -62,7 +69,7 @@ for (const role of roles) {
   }
 }
 assert(themedIcons.size === roles.length, 'Themed icons must distinguish all four roles');
-for (const name of ['api', 'config', 'i18n', 'ui', 'shell']) {
+for (const name of ['api', 'auth', 'config', 'i18n', 'ui', 'shell']) {
   const p = JSON.parse(readFileSync(`packages/${name}/package.json`, 'utf8'));
   assert(
     p.version === pkg.version && p.private === true && existsSync(`packages/${name}/${p.main}`),

@@ -1,0 +1,67 @@
+{
+  "version": "0.2.0",
+  "round": 2,
+  "verifiedAt": "2026-10-23",
+  "exports": [
+    {
+      "role": "admin",
+      "platform": "android",
+      "ownedRuntimeModulesMatchingSource": 41
+    },
+    {
+      "role": "admin",
+      "platform": "ios",
+      "ownedRuntimeModulesMatchingSource": 41
+    },
+    {
+      "role": "admin",
+      "platform": "web",
+      "ownedRuntimeModulesMatchingSource": 42
+    },
+    {
+      "role": "mother",
+      "platform": "android",
+      "ownedRuntimeModulesMatchingSource": 41
+    },
+    {
+      "role": "mother",
+      "platform": "ios",
+      "ownedRuntimeModulesMatchingSource": 41
+    },
+    {
+      "role": "mother",
+      "platform": "web",
+      "ownedRuntimeModulesMatchingSource": 42
+    },
+    {
+      "role": "cyclist",
+      "platform": "android",
+      "ownedRuntimeModulesMatchingSource": 41
+    },
+    {
+      "role": "cyclist",
+      "platform": "ios",
+      "ownedRuntimeModulesMatchingSource": 41
+    },
+    {
+      "role": "cyclist",
+      "platform": "web",
+      "ownedRuntimeModulesMatchingSource": 42
+    },
+    {
+      "role": "client",
+      "platform": "android",
+      "ownedRuntimeModulesMatchingSource": 41
+    },
+    {
+      "role": "client",
+      "platform": "ios",
+      "ownedRuntimeModulesMatchingSource": 41
+    },
+    {
+      "role": "client",
+      "platform": "web",
+      "ownedRuntimeModulesMatchingSource": 42
+    }
+  ]
+}

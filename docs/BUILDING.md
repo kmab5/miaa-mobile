@@ -41,11 +41,15 @@ npm run build:android -- cyclist preview
 npm run build:android -- client preview
 ```
 
-Or run `npm run verify:android` to build all four sequentially. Output: `artifacts/miaa-APP-preview-v0.1.0.apk`. These APKs bundle JS and assets and do not need the Metro server. They use Expo's test signing configuration and a `.preview` application ID; they are not production-signed releases and must not be uploaded as final store builds.
+Or run `npm run verify:android` to build all four sequentially. Output: `artifacts/miaa-APP-preview-v0.2.0.apk`. These APKs bundle JS and assets and do not need the Metro server. They use Expo's test signing configuration and a `.preview` application ID; they are not production-signed releases and must not be uploaded as final store builds.
+
+Native builds use one Gradle worker and disable project parallelism by default to control memory use. Run exports and native compilation separately. On a machine with spare memory, set `MIAA_ANDROID_BUILD_WORKERS` to an integer from 1 to 8 to change the Gradle worker count. CI explicitly selects ARM64 previews, matching the locally inspected packages.
 
 By default the script builds `arm64-v8a,x86_64`, covering current physical phones and common emulators. To reduce a local build to ARM64, set `MIAA_ANDROID_ARCHITECTURES=arm64-v8a` in your shell before invoking the same command. Never assume an ARM64-only APK can run on an x86 emulator.
 
-Install using the Android file installer or `adb install -r artifacts/miaa-client-preview-v0.1.0.apk` (substitute app name). First installation may require allowing installs from your chosen file manager. Test apps cannot overwrite production apps because their IDs differ. A signature mismatch on an existing test installation requires uninstalling that test app first, which removes its local preferences.
+Install using the Android file installer or `adb install -r artifacts/miaa-client-preview-v0.2.0.apk` (substitute app name). First installation may require allowing installs from your chosen file manager. Test apps cannot overwrite production apps because their IDs differ. A signature mismatch on an existing test installation requires uninstalling that test app first, which removes its local preferences.
+
+The CNG finalization plugin normalizes the known package-refactor/splash-template duplicate entry points, preserving splash registration. It refuses conflicting native edits. The build script verifies a single correctly namespaced MainActivity/MainApplication pair before Gradle.
 
 The script clears the selected app’s generated image cache, regenerates `apps/APP/android` with Expo CNG and checks the actual generated themed icon before compiling. Do not edit generated files by hand. It invokes Java's Gradle wrapper directly, including on Windows, to avoid shell/path quoting problems. SDK/license/download errors fail the command; no successful APK is reported unless Gradle completed and the output file exists. A previous artifact does not prove the current build passed.
 
@@ -62,17 +66,18 @@ npm run start:client -- --localhost
 
 Install the resulting `development` APK and keep Metro running. For a USB-connected Android device, `adb reverse tcp:8081 tcp:8081` connects its local development server to your computer. If you intentionally use a LAN connection, use a trusted private network and the corresponding Expo CLI options. No Expo/EAS cloud account is required for these local workflows.
 
-A native emulator can reach a backend on your computer at `http://10.0.2.2:3000`. Put that origin in `.env.local` and use only the `development` variant; preview/production reject HTTP. The public health check is the only API request in Round 1. Backend CORS settings are irrelevant to native HTTP, but the optional web preview needs appropriate CORS behavior for a real cross-origin service probe; browser tests mock that public endpoint.
+A native emulator can reach a backend on your computer at `http://10.0.2.2:3000`. Put that origin in `.env.local` and use only the `development` variant; preview/production reject HTTP. The apps use the existing bearer API for authentication and account security. Backend CORS settings are irrelevant to native HTTP. The optional web preview needs an approved CORS configuration to use a different-origin backend; browser tests mock the contract and do not change production CORS. Web tokens are memory-only and a full reload signs out. Native restoration uses SecureStore and requires rebuilding the app after this update; an old Round 1 APK cannot gain the new native module by restarting Metro.
 
 ## Web and browser smoke checks
 
 ```bash
 npx playwright install chromium
 npm run export:all
+npm run verify:exports
 npm run test:ui
 ```
 
-Browser checks serve each app on loopback ports 3100–3103, inspect a narrow layout, follow workspace/module routes, persist Amharic and exercise connection results. This helps validate shared UI and routing; it does not replace Android/iOS device checks.
+Browser checks serve each app on loopback ports 3100–3103, exercise protected navigation, role-specific sign-in, Client signup, account security, logout, memory-only credentials, narrow layouts, language persistence and public connection feedback. This helps validate shared UI and routing; it does not replace Android/iOS device checks.
 
 ## Future production signing
 

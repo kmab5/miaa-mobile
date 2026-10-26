@@ -1,27 +1,21 @@
 # Progress and delivery protocol
 
-Version: **0.1.0**. Current milestone: **Round 1 foundation**. See [VALIDATION.md](../VALIDATION.md) for observed verification rather than treating this file as proof of a completed build.
+Version: **0.2.0**. Current milestone: **Round 2 authentication**. See [VALIDATION.md](../VALIDATION.md) for observed checks and remaining acceptance limits.
 
-Source baseline inspected through GitHub: `kmab5/miaa-mobile`, `main`, commit `ea8ac2e94206a22ae851e3559090fae6bb84b179`. That commit contains the initial `.gitignore`. Its existing rules are retained and extended for generated native directories, environments, signing keys and artifacts. No remote write is required for this delivery.
+The mobile repository main branch was read through GitHub at the start of this round: `ea8ac2e94206a22ae851e3559090fae6bb84b179`, still the initial ignore-file commit. There were no newer remote application changes to integrate. The incremental baseline is the full Round 1 source archive v0.1.0 delivered in this conversation, SHA256 `c0761d993518b8f3e1e56d8dc994bfb8bc00026360abe4f308103a0f649bfc79`. No remote push or hosted CI run is claimed.
 
-The portable API client/contracts are derived from the web v0.19.0 implementation produced in this conversation. No web server code, database credentials or Telegram secrets belong in this repository. Actual private API integration will be tested in Round 2 against the deployed backend contract.
+## Completed scope
 
-## Delivered scope
+- Round 1: four distinct app identities, navigation, bilingual UI/fonts, public health check, builds and CI.
+- Round 2: password and verified Telegram OTP login, Telegram linking status, Client-only verified signup, SecureStore adapter, isolated role/variant/origin credentials, session validation/rotation, lifecycle locking, logout/revocation, account security/password management, guarded navigation and failure states.
+- Client, Mother, Cyclist and Admin business workflows remain the scope of Rounds 3–7. Round 8 remains device/release hardening and production signing.
 
-- Four separate app projects and role-checked configuration.
-- Shared brand components, original vector assets, bundled Latin/Ethiopic fonts and app icons.
-- Working Home/Workspace/Settings tabs and module overview/deep-link recovery.
-- English/Amharic preference persistence, failed-storage recovery and serialized preference writes.
-- Explicit public health probe with cancellation, timeout and useful failure states.
-- Node-based cross-platform build/export/check scripts, native/tooling version pins and CI.
-- Tests, architecture, setup, acceptance and development roadmap documentation.
+The backend contract is the web v0.19.0 mobile API already provided in this conversation. Public deployed auth options were checked without credentials. No private production account, OTP, signup, password or business mutation was used in automated testing; those calls use contract fixtures. See [AUTHENTICATION.md](AUTHENTICATION.md).
 
-No authenticated business feature is claimed complete in Round 1. Real sign-in, customer/kitchen/rider/admin data, private actions, push notifications and background mutation synchronization are not present in the preview.
+## Incremental delivery
 
-## Applying Round 1
+Apply Round 2 only after Round 1 v0.1.0. The update archive contains changed/new source files at their original paths, a baseline/target SHA256 manifest, a guarded cross-platform Node updater, and an equivalent Git patch. The updater checks every existing baseline file before writing and refuses to overwrite unrelated edits. Review conflicts instead of forcing them. Files already at their exact target content are safe to skip. Preserve your checkout's git history and configuration.
 
-Extract the full repository archive. Copy its contents into your existing `miaa-mobile` checkout, including configuration files; keep your checkout's `.git` directory. Do not nest another `miaa-mobile` folder inside the repository. Then run `npm ci`, `npm run check`, inspect the changes and commit/push normally. No secrets or generated native/build folders are included in the source ZIP.
+After applying, run `npm ci`, `npm run check`, `npm run doctor`, exports and the browser suite. A fresh native build is required for SecureStore. Push the reviewed changes normally and inspect the actual GitHub Actions run.
 
-## Later rounds
-
-At the beginning of every round, inspect the latest GitHub head, repository instructions, changed files and CI. Preserve edits made between deliveries. Deliver either a patch against that exact head or only changed files with their original paths. Record the base commit, version, changed scope, checks and any known limits. Do not repeatedly replace the whole repository after Round 1. Each round must leave the previously implemented app workflows working.
+At the beginning of each later round, inspect the latest GitHub head, instructions, changed files and CI. Preserve intervening work, deliver incremental changes with paths intact, and record the exact baseline, checks and limitations.

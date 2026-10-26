@@ -1,8 +1,8 @@
 # Mi'aa mobile
 
-**v0.1.0 · Round 1 foundation.** Four separate Android/iOS app projects: Admin, Mother, Cyclist and Client. Shared TypeScript packages provide the design system, English/Amharic language settings, navigation and API transport.
+**v0.2.0 · Round 2 authentication.** Four separate Android/iOS app projects: Admin, Mother, Cyclist and Client. Shared TypeScript packages provide the design system, English/Amharic language settings, navigation and API transport.
 
-This release provides usable preview shells, not authenticated business workflows. Open a workspace/module, change and retain your language, and run/cancel a public service connection check. Authentication is the next round. No new backend or paid service is required.
+Password and verified Telegram sign-in now connect real role-matched accounts to all four apps. Client signup, secure native session restoration/renewal, logout, password changes and account session revocation are included. Lunch/operations modules remain clearly marked overviews until their respective rounds. The existing Render API and Neon database are reused; no new backend or paid service is required.
 
 ## Start
 
@@ -15,6 +15,8 @@ npm run start:client
 ```
 
 Replace `client` with `admin`, `mother` or `cyclist`. The API defaults to `https://miaa.onrender.com`; no `.env` file or credentials are required. For a different development server, copy `.env.example` to `.env.local` and edit public configuration only.
+
+Signing in requires an existing account for the installed app role. Staff accounts come from an administrator; only the Client app can create a new account after Telegram phone verification. Password recovery uses verified Telegram or the office. Native credentials are stored with Expo SecureStore; web preview credentials last only until reload. A new native build is required for the added SecureStore module.
 
 For Android installation/builds, see [BUILDING.md](docs/BUILDING.md). Native development requires the Android SDK/JDK, while JavaScript checks need only Node. An APK preview contains its JS bundle and runs without Metro. The current Expo SDK is pinned in the lockfile; use local development/preview builds rather than assuming the installed Expo Go app supports it.
 
@@ -30,6 +32,7 @@ Repeat for the other three app names. Preview builds have separate application I
 npm run check
 npm run doctor
 npm run export:all
+npm run verify:exports
 npm run test:ui
 npm run verify:android
 npm run security:audit
@@ -48,4 +51,4 @@ npm run security:audit
 - [Device acceptance checklist](docs/ACCEPTANCE.md)
 - [Font and brand attribution](docs/ATTRIBUTION.md)
 
-The upstream repository is [kmab5/miaa-mobile](https://github.com/kmab5/miaa-mobile). Round 1 is a full repository delivery based on its initial `.gitignore` commit. Future rounds will be patches or changed files with directory structure preserved, based on the then-current GitHub head.
+The upstream repository is [kmab5/miaa-mobile](https://github.com/kmab5/miaa-mobile). Its head was checked at the start of Round 2 and still contains only the initial commit. This incremental delivery applies **after the delivered Round 1 v0.1.0**, preserving folder structure. Follow the included guarded update instructions before copying files or applying the patch. See [AUTHENTICATION.md](docs/AUTHENTICATION.md) for endpoint mapping, recovery behavior and acceptance.

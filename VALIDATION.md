@@ -1,59 +1,66 @@
-# Round 1 validation — v0.1.0
+# Round 2 validation — v0.2.0
 
-Observed on 2026-10-21. Source baseline: `kmab5/miaa-mobile` main at `ea8ac2e94206a22ae851e3559090fae6bb84b179`; the remote head was rechecked during final verification and remained unchanged. This is a full source delivery; no remote push or hosted CI success is claimed.
+Observed on 2026-10-23 using Node 24.19.0, npm 11.9.0 and the pinned Expo 58 / React Native 0.88 / React 19.3 stack. This is an incremental update to the delivered Round 1 v0.1.0. GitHub main was checked at the start and remains the initial commit `ea8ac2e94206a22ae851e3559090fae6bb84b179`; no hosted CI result or remote push is claimed.
 
-## Observed checks
+| Check                                        | Result                                                                  |
+| -------------------------------------------- | ----------------------------------------------------------------------- |
+| Dependency installation from pinned lockfile | Passed                                                                  |
+| ESLint, zero allowed warnings                | Passed                                                                  |
+| Prettier                                     | Passed                                                                  |
+| Strict TypeScript                            | Passed                                                                  |
+| Jest pure and native interactions            | 122 passed across 9 suites                                              |
+| Expo bundled SDK dependency matrix           | All four apps passed; offline matrix check                              |
+| Android/iOS/web exports                      | All twelve passed; exported app modules match final source              |
+| Playwright browser acceptance                | 9 passed across all four roles                                          |
+| Android ARM64 release-preview APKs           | All four apps compiled, signed and inspected                            |
+| Live deployed public auth options            | HTTP 200; password/Telegram enabled, seven-day sessions                 |
+| Incremental update and Git patch             | Both reproduced all 194 source files from the Round 1 baseline          |
+| Unfiltered npm security audit                | Exit 1; four high entries from one unresolved upstream tooling advisory |
 
-| Check                                                                                                                       | Result                                                                |
-| --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| Clean `npm ci` in an extracted source archive                                                                               | Passed, pinned lockfile; no ignored install scripts                   |
-| ESLint with zero allowed warnings                                                                                           | Passed                                                                |
-| Prettier repository formatting                                                                                              | Passed                                                                |
-| TypeScript strict check                                                                                                     | Passed                                                                |
-| Jest pure/native interaction tests                                                                                          | 69 passed across 5 suites                                             |
-| Repository identities, assets, icon safe areas/distinct themed badges, versions, package boundaries and documentation audit | Passed                                                                |
-| Installed dependency versions versus Expo's bundled SDK matrix, all four apps                                               | Passed using the offline matrix check                                 |
-| Android/iOS/web JavaScript and static exports                                                                               | All four apps passed on all three platforms                           |
-| Playwright browser interactions, four apps                                                                                  | 4 passed; 360 × 800 viewport                                          |
-| Live public API probe                                                                                                       | HTTP 200; `data.status = ok`, `data.apiVersion = 1`                   |
-| Android ARM64 preview APK compilation                                                                                       | Passed: Admin, Mother, Cyclist and Client; signed standalone previews |
-| Unfiltered `npm run security:audit`                                                                                         | Exits 1: 30 dependency entries, 2 underlying unresolved advisories    |
+The session tests cover fixed-role login, malformed/wrong-role responses, native storage failures/timeouts, response cancellation, duplicate submissions, late login/native writes after logout, stale 401 after a newer login, locked network recovery, revoked/deactivated accounts, expiry, near-expiry rotation, background/foreground locking, logout cleanup failure, remote revocation failure, OTP proof, Client-only signup and password/revoke-all behavior. Native interactions cover bilingual forms, secret clearing, verified signup, linked-status limitations, independent resend/verify cooldown, confirmations and secure adapter isolation.
 
-Browser checks exercise real Home/Workspace/Settings navigation, module entry/back navigation, row layout, visible tab labels, English/Amharic selection, persistence across reload, narrow layout, font notices, public connection success/failure and invalid module recovery. Health responses are mocked in browser tests; a separate live public probe checked the deployed endpoint. No private account or business mutation was used.
+The public live capability probe used no credentials. Private API calls, OTP delivery, signup and account changes use fixtures matching the provided web v0.19.0 API. No production account or business data was mutated. Contract tests are not a claim that authorized real accounts/Telegram delivery were exercised against production.
 
-All four native packages were inspected for valid signatures, distinct preview IDs, bundled JS, all four fonts with matching source checksums, in-app font notices, matching role/API configuration, disabled cleartext traffic and corrected themed-icon pixels within the safe circle. Each packaged source map matched all 31 owned runtime modules to the final source. The package graphs exclude the two advisory-affected Node packages. [ANDROID_BUILDS.json](docs/ANDROID_BUILDS.json) records APK checksums and observed package facts.
+## Export and browser verification
 
-The source build script clears only the selected app’s generated image cache and validates the generated monochrome resource before Gradle. The guard was tested against the actual stale Client image (rejected) and corrected generated icons (accepted). The final Client was rebuilt and re-inspected after this hardening.
+All twelve Android/iOS/web bundles exported successfully with source maps. `npm run verify:exports` compared every owned runtime module to the final repository, checked required authentication modules and rejected foreign role routes. Native bundles matched 41 owned modules each and web bundles matched 42; [EXPORT_BUILDS.json](docs/EXPORT_BUILDS.json) records the results. An iOS JavaScript export does not verify native iOS compilation.
 
-## Toolchain and limits
+All nine Playwright tests passed against the final static exports using Chromium headless shell 149.0.7827.55. They exercised password errors, protected links, account security, logout, reload sign-out, Client verified signup and revoke-all confirmation, plus navigation, language persistence, narrow layouts, the Ethiopic font choice and connection checks for all four roles. Private API responses were fixtures.
 
-Verification ran on Linux using Node 24.19.0, npm 11.9.0, Expo 58.0.16, React Native 0.88.0, React 19.3.0, OpenJDK 17.0.20, Gradle 9.4.1, Android compile SDK 37 / target 36 / minimum 24, Build Tools 37.0.0 plus transitive 36.0.0, NDK 27.1.12297006 and CMake 3.22.1. Native Android verification selects `MIAA_ANDROID_ARCHITECTURES=arm64-v8a`. The default build script additionally includes x86_64, but that additional ABI is not claimed locally verified.
+## Native package verification
 
-Chromium 149.0.7827.55 headless shell was used through Playwright 1.61.1. The test configuration accepts `MIAA_CHROMIUM_PATH` for a locally installed compatible browser; ordinary CI installs Playwright Chromium. No test retry or arbitrary sleep was used to turn a failing assertion green. Navigation checks wait for the actual destination before the next action.
+All four Android release-preview builds passed with JDK 17.0.20.1, Gradle 9.4.1, compile SDK 37 / target 36 / minimum 24, NDK 27.1.12297006 and CMake 3.22.1. APKs use version 0.2.0 / versionCode 2 and distinct `.preview` IDs. They are standalone, test-signed ARM64 packages; no Metro or Expo cloud account is needed to install them.
 
-No Android emulator or physical phone was available. A signed, successfully compiled APK is not a claim of device acceptance. iOS JavaScript export passed; native iOS compilation, signing and installation require macOS/Xcode and remain unverified. Amharic editorial review and device accessibility/font-scaling acceptance remain manual checks in [ACCEPTANCE.md](docs/ACCEPTANCE.md).
+Inspection verified signatures, role/API/version configuration, the actual native SecureStore module after R8 optimization, both Android backup exclusion rules, disabled cleartext, all four font files against source checksums, font license text, and every one of the 41 owned JavaScript source modules against the final repository. The advisory-affected Node packages are absent from these application graphs. [ANDROID_BUILDS.json](docs/ANDROID_BUILDS.json) records observed facts and checksums.
 
-The compatible framework/tooling stack emits upstream npm and Gradle/Kotlin deprecation notices. Project lint still passes with zero warnings. Upgrading Gradle to 10 or forcing unsupported dependency majors is not a verified fix for those notices.
+Builds default to one Gradle worker with project parallelism disabled, and Metro already uses one worker. A CNG finalization plugin repairs the reproduced duplicate package-refactor/splash-template entry points while preserving splash registration; unrelated native differences fail explicitly. Four regression tests cover the duplicate, no-op behavior, conflict refusal and missing splash hook. Mother and Cyclist compile with this finalizer; the already-correct Client/Admin entry points were verified byte-identical when it was applied. The builder checks the namespace/unique pair before Gradle.
 
-## Outstanding dependency findings
+Upstream Gradle/Kotlin/dependency deprecation notices remain distinct from zero-warning project ESLint. One earlier overlapping export/native build exceeded this environment's 8 GiB limit; final native builds ran separately with the bounded worker configuration.
 
-The security audit is **not green**. `braces` 3.0.3 and `node-forge` 1.4.0 have no published patched upstream release at verification time. See [DEPENDENCIES.md](docs/DEPENDENCIES.md) for advisory links, scope, resolved transitive findings and the complete retained audit report. Quality/native CI jobs do not assert a clean advisory scan.
+## Security and acceptance limits
 
-This is an unauthenticated foundation preview. Secure token storage, sign-in, renewal/revocation and authenticated business workflows start in Round 2. No production signing, push service or background mutation queue is claimed complete.
+The advisory audit is not green. `node-forge` 1.4.0 has no published patched version listed at verification; it is reached through Expo's development certificate tooling. The earlier braces advisory was withdrawn upstream on 2026-10-23, accounting for the lower count. [DEPENDENCIES.md](docs/DEPENDENCIES.md) and [the raw current audit](docs/security-audit-2026-10-23.json) retain the findings.
+
+Native iOS compilation/signing requires macOS/Xcode and has not been verified here. No physical Android/iOS device or emulator acceptance is claimed. Actual keystore restoration, device foreground/background, Telegram own-contact proof, authorized accounts for all roles, keyboard/accessibility/font scaling and human Amharic editorial review remain explicit acceptance tasks in [ACCEPTANCE.md](docs/ACCEPTANCE.md).
+
+The browser preview intentionally uses memory-only tokens. Reloading it signs out while retaining only the language preference; native restart restoration is a different acceptance check. The existing backend is reused without infrastructure changes. Client/Mother/Cyclist/Admin operational workflows are still module overviews, with real features scheduled for later rounds.
+
+## Incremental delivery verification
+
+The final 64-file update was applied to a fresh extraction of the delivered Round 1 archive. Both the Node updater and `git apply` reproduced all 194 repository files byte-for-byte. The updater also passed Windows CRLF input, repeat application, unrelated-file preservation and a conflicting-file refusal with no writes. Source checks were repeated in the applied repository using its separate clean `npm ci` installation.
 
 ## Reproduce
-
-From the repository root:
 
 ```bash
 npm ci
 npm run check
 npm run doctor
 npm run export:all
+npm run verify:exports
 npx playwright install chromium
 npm run test:ui
 npm run verify:android
 npm run security:audit
 ```
 
-Android verification requires the SDK/JDK and accepted licenses described in [BUILDING.md](docs/BUILDING.md). The security command currently returns the outstanding findings above. After pushing, inspect the actual GitHub Actions run; configured jobs are not proof of a completed hosted run.
+Android verification needs the SDK/JDK described in [BUILDING.md](docs/BUILDING.md). SecureStore adds a native module, so build a fresh native binary after applying the update. Production signing remains blocked until Round 8. The security command intentionally reports outstanding upstream findings rather than suppressing them. After pushing, inspect the actual GitHub Actions run.

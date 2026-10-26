@@ -1,6 +1,8 @@
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { appRole, appDirectory, cli, loadEnvironment, root, run, runExpo } from './shared.mjs';
+import entrypoints from '../config/normalize-android-entrypoints.cjs';
+import { apps } from '../config/apps.cjs';
 import { checkMonochromeIcon } from '../config/check-icon.mjs';
 import { resolveEnvironment } from '../config/environment.cjs';
 cli(async () => {
@@ -8,9 +10,12 @@ cli(async () => {
   const role = appRole(input);
   if (!['development', 'preview'].includes(variant))
     throw new Error(
-      'Round 1 supports development and preview builds. Production signing is a later release milestone.',
+      'Development and preview builds are supported. Production signing is a later release milestone.',
     );
   const env = loadEnvironment({ MIAA_BUILD_VARIANT: variant, CI: '1' });
+  const workers = Number(env.MIAA_ANDROID_BUILD_WORKERS || '1');
+  if (!Number.isInteger(workers) || workers < 1 || workers > 8)
+    throw new Error('MIAA_ANDROID_BUILD_WORKERS must be an integer from 1 to 8.');
   resolveEnvironment(env);
   const sdk = env.ANDROID_HOME || env.ANDROID_SDK_ROOT;
   if (!sdk || !existsSync(sdk))
@@ -30,6 +35,10 @@ cli(async () => {
   });
   runExpo(role, ['prebuild', '--platform', 'android', '--clean', '--no-install'], env);
   const native = join(appDirectory(role), 'android');
+  entrypoints.assertAndroidEntrypoints(
+    native,
+    apps[role].applicationId + (variant === 'preview' ? '.preview' : '.dev'),
+  );
   await checkMonochromeIcon(
     join(native, 'app/src/main/res/mipmap-xxxhdpi/ic_launcher_monochrome.webp'),
   );
@@ -71,7 +80,8 @@ cli(async () => {
       'org.gradle.wrapper.GradleWrapperMain',
       task,
       '--no-daemon',
-      '--max-workers=2',
+      `--max-workers=${workers}`,
+      '-Dorg.gradle.parallel=false',
       '--console=plain',
       '-Dorg.gradle.vfs.watch=false',
       `-PreactNativeArchitectures=${architectures}`,

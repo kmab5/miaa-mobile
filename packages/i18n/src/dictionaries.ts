@@ -1,4 +1,6 @@
+import { authEn, authAm } from './auth-dictionaries';
 export const en = {
+  ...authEn,
   'nav.home': 'Home',
   'nav.workspace': 'Workspace',
   'nav.settings': 'Settings',
@@ -10,7 +12,7 @@ export const en = {
   'common.noAccount': 'No account connected',
   'common.accountRequired': 'Your workspace, ready for you',
   'common.previewNotice':
-    'This preview introduces your workspace. Sign-in and live account features will be available in a later update.',
+    'Your account is connected. Live lunch and operations features will arrive in the next rounds.',
   'common.backHome': 'Back to home',
   'common.loading': 'Getting things ready…',
   'common.retry': 'Try again',
@@ -131,6 +133,7 @@ export const en = {
 export type TranslationKey = keyof typeof en;
 export type Dictionary = Record<TranslationKey, string>;
 export const am: Dictionary = {
+  ...authAm,
   'nav.home': 'መነሻ',
   'nav.workspace': 'የሥራ ቦታ',
   'nav.settings': 'ቅንብሮች',
@@ -141,7 +144,7 @@ export const am: Dictionary = {
   'common.openModule': 'ይመልከቱ',
   'common.noAccount': 'መለያ አልተገናኘም',
   'common.accountRequired': 'የሥራ ቦታዎ ይጠብቅዎታል',
-  'common.previewNotice': 'ይህ ቅድመ ዕይታ የሥራ ቦታዎን ያስተዋውቃል። መግባትና የመለያ አገልግሎቶች በሚቀጥለው ዝማኔ ይቀርባሉ።',
+  'common.previewNotice': 'መለያዎ ተገናኝቷል። የምሳና የሥራ አገልግሎቶች በሚቀጥሉት ዙሮች ይቀርባሉ።',
   'common.backHome': 'ወደ መነሻ ተመለስ',
   'common.loading': 'እየተዘጋጀ ነው…',
   'common.retry': 'እንደገና ይሞክሩ',

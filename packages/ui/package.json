@@ -1,6 +1,6 @@
 {
   "name": "@miaa/ui",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -9,7 +9,7 @@
     "react-native": "0.88.0"
   },
   "dependencies": {
-    "@miaa/i18n": "0.1.0",
+    "@miaa/i18n": "0.2.0",
     "react-native-svg": "15.16.0",
     "lucide-react-native": "1.61.0"
   }

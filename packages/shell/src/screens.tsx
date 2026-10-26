@@ -90,11 +90,11 @@ export function HomeScreen() {
           <View style={styles.inline}>
             <View style={styles.statusDot} />
             <AppText variant="small" weight="semibold">
-              {t('common.noAccount')}
+              {t('auth.signedIn')}
             </AppText>
           </View>
           <AppText variant="small" style={styles.muted}>
-            {t('common.previewNotice')}
+            {t('auth.futureWork')}
           </AppText>
         </Card>
       </Page>
@@ -122,7 +122,7 @@ export function WorkspaceScreen() {
             <WorkspaceItem key={item.id} item={item} index={index} />
           ))}
         </View>
-        <Notice title={t('common.noAccount')} body={t('common.previewNotice')} />
+        <Notice title={t('auth.signedIn')} body={t('auth.futureWork')} />
       </Page>
     </SafeAreaView>
   );
@@ -153,7 +153,7 @@ export function ModuleScreen() {
           </AppText>
           <AppText style={styles.intro}>{t(module.detail)}</AppText>
         </View>
-        <Notice title={t('common.accountRequired')} body={t('common.previewNotice')} />
+        <Notice title={t('auth.signedIn')} body={t('auth.futureWork')} />
         <Button
           label={t('common.backHome')}
           tone="secondary"

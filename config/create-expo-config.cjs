@@ -30,12 +30,12 @@ module.exports = function createExpoConfig(role) {
     ios: {
       bundleIdentifier: app.applicationId + suffix,
       supportsTablet: true,
-      buildNumber: '1',
+      buildNumber: '2',
       infoPlist: { ITSAppUsesNonExemptEncryption: false },
     },
     android: {
       package: app.applicationId + suffix,
-      versionCode: 1,
+      versionCode: 2,
       adaptiveIcon: {
         foregroundImage: './assets/adaptive-icon.png',
         backgroundColor: '#ffffff',
@@ -52,6 +52,8 @@ module.exports = function createExpoConfig(role) {
     web: { bundler: 'metro', output: 'static', favicon: './assets/favicon.png' },
     plugins: [
       'expo-router',
+      ['expo-secure-store', { configureAndroidBackup: true }],
+      '../../config/with-android-entrypoints.cjs',
       [
         'expo-splash-screen',
         { image: './assets/splash.png', imageWidth: 96, backgroundColor: '#ffffff' },

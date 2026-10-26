@@ -20,17 +20,20 @@ import { Icon, type IconName } from './icons';
 export function AppText({
   variant = 'body',
   weight = 'regular',
+  language,
   style,
   ...props
 }: TextProps & {
   variant?: 'body' | 'small' | 'label' | 'title' | 'hero';
+  language?: 'en' | 'am';
   weight?: 'regular' | 'semibold';
   style?: StyleProp<TextStyle>;
 }) {
   const { locale } = useTranslation();
+  const textLocale = language ?? locale;
   const bundledFonts = useBundledFonts();
   const fontFamily =
-    locale === 'am'
+    textLocale === 'am'
       ? weight === 'semibold'
         ? typography.ethiopicSemiBold
         : typography.ethiopicRegular
@@ -41,12 +44,12 @@ export function AppText({
     <Text
       {...props}
       maxFontSizeMultiplier={2}
-      accessibilityLanguage={locale === 'am' ? 'am-ET' : 'en-US'}
+      accessibilityLanguage={textLocale === 'am' ? 'am-ET' : 'en-US'}
       style={[
         styles.text,
         typeStyles[variant],
         { fontFamily: bundledFonts ? fontFamily : undefined },
-        locale === 'am' && ethiopicStyles[variant],
+        textLocale === 'am' && ethiopicStyles[variant],
         style,
       ]}
     />
@@ -111,10 +114,12 @@ export function Button({
   tone = 'primary',
   icon,
   busy = false,
+  language,
   disabled,
   ...props
 }: Omit<PressableProps, 'style' | 'children'> & {
   label: string;
+  language?: 'en' | 'am';
   tone?: 'primary' | 'secondary' | 'quiet';
   icon?: IconName;
   busy?: boolean;
@@ -145,7 +150,7 @@ export function Button({
       ) : icon ? (
         <Icon name={icon} size={20} />
       ) : null}
-      <AppText weight="semibold" style={styles.buttonText}>
+      <AppText weight="semibold" language={language} style={styles.buttonText}>
         {label}
       </AppText>
     </Pressable>

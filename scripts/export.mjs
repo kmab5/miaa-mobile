@@ -4,7 +4,7 @@ cli(() => {
   for (const role of roles)
     runExpo(
       role,
-      ['export', '--platform', 'all', '--max-workers', '1'],
+      ['export', '--platform', 'all', '--source-maps', '--max-workers', '1'],
       loadEnvironment({ CI: '1', MIAA_BUILD_VARIANT: 'preview' }),
     );
 });

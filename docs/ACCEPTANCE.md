@@ -1,3 +1,20 @@
+# Round 2 acceptance additions
+
+These manual items are pending until exercised on authorized native test devices/accounts; automated fixture checks do not mark them complete.
+
+- Sign in with a real authorized account for each of Admin, Mother, Cyclist and Client; reject wrong-role and deactivated accounts.
+- Cold restart with a saved token; verify the workspace stays locked until server validation succeeds.
+- Background/foreground, lose network, retry and revoke access from the web; ensure no stale private screen survives.
+- Use actual Telegram own-contact verification, OTP delivery/resend, expired code/link and Client signup. Confirm linked status alone never signs an existing user in.
+- Set/change passwords, confirm other devices are signed out, prevent Telegram unlink without a password, and revoke all sessions including the current app and website.
+- Sign out offline and verify local removal; inspect the explicit remote-revocation warning. Exercise native storage failure recovery and uninstall/reinstall behavior separately.
+- Check Android/iOS keyboard avoidance, large text, screen readers, English/Amharic layout and editorial accuracy.
+- Rebuild native apps for SecureStore; an old Round 1 binary does not contain the module.
+
+The foundation checklist below remains applicable. Round 1 build records describe v0.1.0 only; current verification is in [VALIDATION.md](../VALIDATION.md).
+
+---
+
 # Foundation device acceptance — v0.1.0
 
 These are manual device checks, not claims of completed emulator/phone testing. Automated source, browser and compilation evidence is recorded in [VALIDATION.md](../VALIDATION.md).

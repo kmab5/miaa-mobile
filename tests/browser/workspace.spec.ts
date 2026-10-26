@@ -12,7 +12,47 @@ for (const [index, app] of apps.entries()) {
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));
     const origin = `http://127.0.0.1:${3100 + index}`;
+    await page.route('**/api/v1/auth/options', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
+        },
+        body: JSON.stringify({ data: { password: true, telegram: true, sessionDays: 7 } }),
+      }),
+    );
+    await page.route('**/api/v1/auth/password', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
+        },
+        body: JSON.stringify({
+          data: {
+            accessToken: 'miaa_m1_' + 'a'.repeat(43),
+            tokenType: 'Bearer',
+            expiresAt: new Date(Date.now() + 7 * 86400000).toISOString(),
+            user: {
+              id: 1,
+              role: app.role,
+              phoneNumber: '+251911111111',
+              email: null,
+              locale: 'en',
+            },
+          },
+        }),
+      }),
+    );
     await page.goto(origin);
+    await page.getByLabel('Phone number or email', { exact: true }).fill('0911111111');
+    await page.getByLabel('Password', { exact: true }).fill('test-password');
+    await page.getByRole('button', { name: 'Sign in', exact: true }).click();
     await expect(page.getByRole('heading', { name: app.heading })).toBeVisible();
     const tabLabel = page.getByText('Home', { exact: true });
     expect(
@@ -31,7 +71,13 @@ for (const [index, app] of apps.entries()) {
     await page.getByRole('radio', { name: 'አማርኛ', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'እንደ ቤትዎ ይሁኑ።' })).toBeVisible();
     await page.reload();
-    await expect(page.getByRole('heading', { name: 'እንደ ቤትዎ ይሁኑ።' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'እንኳን ደህና መጡ።' })).toBeVisible();
+    await page.getByRole('button', { name: 'English', exact: true }).click();
+    await page.getByLabel('Phone number or email', { exact: true }).fill('0911111111');
+    await page.getByLabel('Password', { exact: true }).fill('test-password');
+    await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+    await page.getByRole('tab', { name: 'Settings', exact: true }).click();
+    await page.getByRole('radio', { name: 'አማርኛ', exact: true }).click();
     await expect(page.getByRole('radio', { name: 'አማርኛ', exact: true })).toBeChecked();
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
@@ -46,7 +92,11 @@ for (const [index, app] of apps.entries()) {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        headers: { 'Access-Control-Allow-Origin': '*' },
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
+        },
         body: JSON.stringify({ data: { status: 'ok', apiVersion: 1 } }),
       });
     });
@@ -56,7 +106,7 @@ for (const [index, app] of apps.entries()) {
     await page.getByRole('button', { name: 'Check connection', exact: true }).click();
     await expect(page.getByText('Could not connect', { exact: true })).toBeVisible();
     await page.goto(`${origin}/modules/not-a-real-module`);
-    await expect(page.getByRole('heading', { name: 'This page is not available' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Welcome back.' })).toBeVisible();
     expect(errors).toEqual([]);
   });
 }
