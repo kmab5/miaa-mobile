@@ -75,6 +75,7 @@ for (const name of [
   'client-portal',
   'mother-portal',
   'cyclist-portal',
+  'admin-portal',
   'config',
   'i18n',
   'ui',
@@ -104,7 +105,7 @@ for (const role of roles) {
     }
   }
   visit(app);
-  for (const workflow of ['client', 'mother', 'cyclist'])
+  for (const workflow of ['client', 'mother', 'cyclist', 'admin'])
     assert(
       role === workflow || !visited.has(`@miaa/${workflow}-portal`),
       `${role}: imports ${workflow} workflows`,
@@ -117,6 +118,12 @@ assert(
     '@miaa/cyclist-portal'
   ] === pkg.version,
   'Cyclist workflow dependency drift',
+);
+assert(existsSync('apps/admin/app/admin/[screen].tsx'), 'Admin routes are missing');
+assert(
+  JSON.parse(readFileSync('apps/admin/package.json', 'utf8')).dependencies['expo-crypto'] ===
+    '58.0.7',
+  'Admin crypto dependency drift',
 );
 const mother = JSON.parse(readFileSync('apps/mother/package.json', 'utf8'));
 assert(

@@ -1,3 +1,21 @@
+# Round 6 acceptance additions
+
+These need authorized Admin accounts/devices; automated private actions use fixtures.
+
+- Compare daily board totals/statuses, kitchen groups, unassigned work, prep/run sheets and labels with the web portal, including future dates and cancelled work. Print through the web portal when needed.
+- Create/edit real test people/catalog records, inspect a kitchen, adjust prices and staff status, and verify in-flight/deactivated-link restrictions. Existing orders must retain their prices and histories.
+- Verify a staff member in person, reset their password and check all their old sessions are revoked. Lose the response and verify actual staff access before releasing the reminder. Inspect device/browser persistence to confirm no password text/hash is stored.
+- Place regular/combined/demo Admin orders, copy a client address, verify all fasting choices, radius/capacity/final price/dates and retry one lost result with the same key/body after restart. Find an older client through server search and start their order from the profile.
+- Correct a packaging/collection/delivery event, reassign work, change a future dish and issue a reviewed replacement. Verify current assignments, terminal states, fasting/capacity and audit reasons remain backend-enforced.
+- Confirm/fail an already received off-platform payment and cancel a test subscription. Compare pending-payment work and refund-due results with the backend; no transfer should occur.
+- Create/resolve/reopen requests and change organization payment instructions; verify the Client reads the persisted instructions.
+- Lose responses and restart/logout/switch admins. Test blocked/corrupt storage, concurrent stale reviews, rate limits, explicit result checking and no automatic resend. Native linking for Admin Crypto and real Android/iOS SecureStore remain device acceptance.
+- Verify keyboard/large-text/screen-reader behavior, long lists/notes, English/Amharic and human Amharic editorial accuracy. Test operations around EAT rollover and record changes after preflight; the API has no new compare-and-swap contract.
+
+No Round 6 platform exports or native builds were run. Finance/payouts/stock/analytics/archive remain Round 7. See [ADMIN.md](ADMIN.md) and [VALIDATION.md](../VALIDATION.md).
+
+---
+
 # Round 5 acceptance additions
 
 These require authorized Cyclist accounts/devices; automation uses fixtures.

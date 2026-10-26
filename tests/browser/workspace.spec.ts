@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { motherDay } from '../fixtures/mother';
 import { cyclistRun } from '../fixtures/cyclist';
+import { adminBoard } from '../fixtures/admin';
 const apps = [
-  { role: 'admin', heading: 'Keep lunch moving.', module: 'Daily operations' },
+  { role: 'admin', heading: 'Run the lunch service', module: 'Daily operations' },
   { role: 'mother', heading: 'Kitchen today', module: 'Preparation queue' },
   { role: 'cyclist', heading: 'Your delivery day', module: 'Assigned run' },
   { role: 'client', heading: 'Your next lunch, sorted.', module: 'Today’s lunch' },
@@ -97,6 +98,31 @@ for (const [index, app] of apps.entries()) {
         }),
       }),
     );
+    await page.route('**/api/v1/admin/**', (route) => {
+      const date = new Date(Date.now() + 10800000).toISOString().slice(0, 10);
+      const data = {
+        ...adminBoard,
+        date,
+        groups: (
+          adminBoard.groups as import('../../packages/admin-portal/src/contracts').Row[]
+        ).map((g) => ({
+          ...g,
+          deliveries: (
+            g.deliveries as import('../../packages/admin-portal/src/contracts').Row[]
+          ).map((d) => ({ ...d, deliveryDate: date })),
+        })),
+      };
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          'Access-Control-Allow-Methods': 'GET,OPTIONS',
+        },
+        body: JSON.stringify({ data }),
+      });
+    });
     await page.goto(origin);
     await page.getByLabel('Phone number or email', { exact: true }).fill('0911111111');
     await page.getByLabel('Password', { exact: true }).fill('test-password');
@@ -106,7 +132,7 @@ for (const [index, app] of apps.entries()) {
     expect(
       await tabLabel.evaluate((element) => element.getBoundingClientRect().height),
     ).toBeGreaterThanOrEqual(18);
-    if (app.role === 'mother' || app.role === 'cyclist') {
+    if (app.role === 'mother' || app.role === 'cyclist' || app.role === 'admin') {
       await page.getByRole('tab', { name: 'Workspace', exact: true }).click();
       await page
         .getByRole('button', { name: app.module, exact: true })
@@ -119,7 +145,12 @@ for (const [index, app] of apps.entries()) {
         .click();
       await expect(
         page.getByRole('heading', {
-          name: app.role === 'mother' ? 'Kitchen workspace' : 'Cyclist workspace',
+          name:
+            app.role === 'mother'
+              ? 'Kitchen workspace'
+              : app.role === 'cyclist'
+                ? 'Cyclist workspace'
+                : 'Admin workspace',
         }),
       ).toBeVisible();
     } else {

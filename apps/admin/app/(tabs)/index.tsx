@@ -1,1 +1,1 @@
-export { HomeScreen as default } from '@miaa/shell';
+export { AdminHomeScreen as default } from '@miaa/admin-portal';

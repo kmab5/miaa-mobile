@@ -1,28 +1,28 @@
-# Round 5 validation — v0.5.0
+# Round 6 validation — v0.6.0
 
-Observed on 2026-10-26 with Node 24.22.1 and npm 11.9.0. Tests/source only: no platform exports, native compilation, APKs or other build outputs.
+Observed on 2026-10-26 with Node 24.22.1 and npm 11.9.0. Source/tests only: no platform export, native compilation, APK or build output.
 
-| Check                                 | Observed result                                                                                                            |
-| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| Clean locked install                  | 1,317 packages installed; external package versions unchanged                                                              |
-| ESLint / Prettier / strict TypeScript | Passed                                                                                                                     |
-| Jest core/native interactions         | 333 tests across 20 suites passed                                                                                          |
-| Installed Expo SDK matrix             | All four apps passed the offline matrix check                                                                              |
-| Project audit                         | Identities, routes, assets, versions, role dependency boundaries and docs passed                                           |
-| Guarded updater and Git patch         | Exact target, idempotence, CRLF, conflicts, path/payload/symlink refusal, temporary-file preservation and rollback checked |
-| Unfiltered dependency audit           | Exit 1: five high entries from the same two documented upstream tooling advisories                                         |
+| Check                                   | Observed result                                                                                                          |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Clean locked install                    | 1,318 packages installed; no external version changes                                                                    |
+| ESLint / formatting / strict TypeScript | Passed                                                                                                                   |
+| Jest pure/native interactions           | 480 tests across 24 suites passed                                                                                        |
+| Installed Expo SDK matrix               | All four apps passed the offline dependency matrix                                                                       |
+| Project audit                           | Identities, protected routes, versions, assets, role dependency boundaries and docs passed                               |
+| Guarded updater / Git patch             | Exact target, idempotence, CRLF, conflict/payload/path/symlink checks, temporary-file preservation and rollback verified |
+| Unfiltered dependency audit             | Exit 1: five high entries from two documented upstream tooling advisories                                                |
 
-The complete previous auth, Client and Mother suite remains included. Cyclist additions cover exact API DTOs; assigned-run/date/bucket validation; frozen and consumed reviews; fresh ownership/status/detail checks; reviewed collection and cyclist-only handover; lost/malformed responses; duplicate taps; stale and aborted reads; exact query-encoded replacement lookup; edit/clear/not-found privacy; safe telephone/maps handlers; zero coordinates; backend delivery counts/decimal rate without payout arithmetic; named/unnamed/daily staff meals; EAT midnight; Retry-After; logout/disposal; role route allowlists; Strict Mode and Amharic controls. A single provider clock observes day changes without per-card polling.
+The suite preserves all previous role regressions. Admin additions cover bounded read/action paths, actual DTO shapes, daily count/date consistency, selected IDs and form limits, phone/zero-coordinate/money/password validation, combined/demo dish composition, real wire methods and acknowledgement shapes for operational mutations, review/no-write-before-confirm behavior, fresh record/price preflight, off-platform payment and refund outcomes, password masking/no persistence, pending journal-before-POST, chunk isolation/corruption/failure, restart recovery, exact order keys/bodies, concurrent stale reviews, minimal revision receipts, explicit checked-result release, cooldown, stale reads/disposal, active-only refresh, protected routes, Strict Mode and bilingual forms.
 
-All private actions use fixtures. No production account, delivery, meal, ticket, order, password or Telegram record was mutated. Existing web v0.19.0 Cyclist routes/services support the implementation without API changes, migrations, new native dependency versions or paid infrastructure.
+All private mutations use fixtures. No production person, password, payment, subscription, delivery, ticket, setting or Telegram record was changed. The existing web v0.19.0 API/services support Round 6 without a backend migration or paid service. External dependency versions are unchanged; Admin declares the existing Expo Crypto module for secure action keys.
 
-GitHub main was checked and remains Round 3 commit `f49977f477eccc4b1328064061b950fd0215d865`. The exact delivered Round 4 v0.4.0 source is this update's baseline; GitHub Round 3 needs Round 4 first. No remote push was made and no hosted Round 5 CI result is claimed.
+GitHub Round 5 commit `3a908a0e66d5fce74d635e7a50210228eab8eb02` was inspected; all 249 tracked files match the delivered v0.5.0 source by Git blob hash. This is the update baseline. No remote push was made and no hosted Round 6 CI is claimed.
 
-Browser navigation fixtures were adjusted for the Cyclist app, but browser tests were not rerun because the existing harness requires platform exports. New screens are verified through React Native interaction tests. Prior [Round 4](docs/ROUND4_VALIDATION.md) and [Round 3](docs/ROUND3_VALIDATION.md) evidence is historical, not new platform acceptance.
+Browser fixtures/navigation were adjusted for Admin routes but not rerun because the existing harness requires exports. New UI is exercised through React Native interactions. [Round 5 evidence](docs/ROUND5_VALIDATION.md) and earlier build records are historical, not current device acceptance.
 
-Actual Android/iOS devices, native linking/builds, real backend account integration, OS phone/maps handlers, accessibility/large text and human Amharic editorial review remain pending in [ACCEPTANCE.md](docs/ACCEPTANCE.md). Source tests do not establish those results. [CYCLIST.md](docs/CYCLIST.md) documents endpoint mapping, current confirmation policy, no automatic retries, memory-only business data and in-flight midnight limitations. [DEPENDENCIES.md](docs/DEPENDENCIES.md) retains the unsuppressed audit findings.
+Actual native linking/builds/devices, real-account integration, screen readers/large text/keyboard behavior, OS storage and human Amharic editorial review remain pending in [ACCEPTANCE.md](docs/ACCEPTANCE.md). Source tests cannot establish them. [ADMIN.md](docs/ADMIN.md) documents endpoint coverage, prep-sheet deadline/printing limits, server list caps, receipt/retry rules, midnight and concurrency limits. [DEPENDENCIES.md](docs/DEPENDENCIES.md) retains the unsuppressed audit findings.
 
-Apply after Round 4 v0.4.0, then run:
+Apply after Round 5 v0.5.0 and run from the application root:
 
 ```bash
 npm ci
@@ -30,4 +30,4 @@ npm run check
 npm run doctor
 ```
 
-Automatic CI remains tests only. Build tools stay available for the owner's manual use.
+Automatic CI remains tests only. The owner can use retained build tooling manually; no build is needed to apply this source update.

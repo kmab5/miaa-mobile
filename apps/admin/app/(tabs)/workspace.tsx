@@ -1,1 +1,1 @@
-export { WorkspaceScreen as default } from '@miaa/shell';
+export { AdminWorkspaceScreen as default } from '@miaa/admin-portal';
