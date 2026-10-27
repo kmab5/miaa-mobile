@@ -68,6 +68,25 @@ function setup() {
 }
 const posts = (s: ReturnType<typeof setup>) =>
   s.request.mock.calls.filter((c) => c[1]?.method === 'POST');
+
+test('read rate limits also block repeated write attempts and cannot shorten an existing cooldown', async () => {
+  jest.useFakeTimers();
+  const s = setup();
+  try {
+    s.request.mockRejectedValueOnce(new MobileApiError(429, 'rate_limited', 'Wait', undefined, 60));
+    await s.model.refreshDay();
+    expect(s.model.getSnapshot().retryAt).toBe(motherNow + 60000);
+    await s.model.package(31);
+    expect(posts(s)).toHaveLength(0);
+    expect(s.request).toHaveBeenCalledTimes(1);
+    s.request.mockRejectedValueOnce(new MobileApiError(429, 'rate_limited', 'Wait', undefined, 2));
+    await s.model.refreshDay();
+    expect(s.model.getSnapshot().retryAt).toBe(motherNow + 60000);
+  } finally {
+    s.model.dispose();
+    jest.useRealTimers();
+  }
+});
 test('packaging re-reads own day and sends only the delivery path, then refreshes', async () => {
   const s = setup();
   await s.model.package(31);

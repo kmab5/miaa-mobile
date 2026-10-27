@@ -3,12 +3,14 @@ const { config } = require('dotenv');
 const { apps } = require('./apps.cjs');
 const { resolveEnvironment } = require('./environment.cjs');
 const pkg = require('../package.json');
+const { releaseMetadata } = require('./release.cjs');
 module.exports = function createExpoConfig(role) {
   config({ path: path.resolve(__dirname, '../.env.local'), quiet: true });
   config({ path: path.resolve(__dirname, '../.env'), quiet: true });
   const app = apps[role];
   if (!Object.hasOwn(apps, role) || !app) throw new Error("Unknown Mi'aa app role.");
   const environment = resolveEnvironment();
+  const release = releaseMetadata();
   const suffix =
     environment.variant === 'production'
       ? ''
@@ -30,12 +32,12 @@ module.exports = function createExpoConfig(role) {
     ios: {
       bundleIdentifier: app.applicationId + suffix,
       supportsTablet: true,
-      buildNumber: '7',
+      buildNumber: release.buildNumber,
       infoPlist: { ITSAppUsesNonExemptEncryption: false },
     },
     android: {
       package: app.applicationId + suffix,
-      versionCode: 7,
+      versionCode: release.versionCode,
       adaptiveIcon: {
         foregroundImage: './assets/adaptive-icon.png',
         backgroundColor: '#ffffff',
@@ -54,6 +56,7 @@ module.exports = function createExpoConfig(role) {
       'expo-router',
       ['expo-secure-store', { configureAndroidBackup: true }],
       '../../config/with-android-entrypoints.cjs',
+      '../../config/with-android-production-signing.cjs',
       [
         'expo-splash-screen',
         { image: './assets/splash.png', imageWidth: 96, backgroundColor: '#ffffff' },

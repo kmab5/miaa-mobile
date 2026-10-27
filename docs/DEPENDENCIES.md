@@ -1,4 +1,4 @@
-# Dependency status — v0.7.0
+# Dependency status — v0.8.0
 
 Checked on 2026-10-26 against the pinned lockfile. The unfiltered `npm run security:audit` exits **1**, reporting five high dependency entries from two underlying advisories. This is not a clean security audit.
 
@@ -21,3 +21,5 @@ Round 5 adds only the local `@miaa/cyclist-portal` workspace. External package v
 Round 6 adds only the local `@miaa/admin-portal` workspace and declares the already pinned Expo Crypto 58.0.7 in the Admin app. External versions remain unchanged. [Its unfiltered audit](security-audit-round6-2026-10-26.json) still reports five high entries from the two documented tooling advisories, with no suppression.
 
 Round 7 extends the existing Admin workspace without changing external versions. [Its unfiltered audit](security-audit-round7-2026-10-26.json) is retained, with no advisory suppression or forced major override. Validation remains tests only.
+
+Round 8 changes no external package versions. [Its raw unfiltered audit](security-audit-round8-2026-10-26.json) retains the findings with no suppression. All role/platform JavaScript graphs and the supplied Android APKs are inspected separately; see [VALIDATION.md](../VALIDATION.md). The requested preview builds do not establish production signing or device acceptance.

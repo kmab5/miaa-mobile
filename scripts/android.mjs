@@ -1,5 +1,7 @@
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
+import { execFileSync } from 'node:child_process';
+import { releaseMetadata, productionSigning, assertSigner } from '../config/release.cjs';
 import { appRole, appDirectory, cli, loadEnvironment, root, run, runExpo } from './shared.mjs';
 import entrypoints from '../config/normalize-android-entrypoints.cjs';
 import { apps } from '../config/apps.cjs';
@@ -8,15 +10,15 @@ import { resolveEnvironment } from '../config/environment.cjs';
 cli(async () => {
   const [input, variant = 'preview'] = process.argv.slice(2);
   const role = appRole(input);
-  if (!['development', 'preview'].includes(variant))
-    throw new Error(
-      'Development and preview builds are supported. Production signing is a later release milestone.',
-    );
+  if (!['development', 'preview', 'production'].includes(variant))
+    throw new Error('Choose development, preview or production.');
   const env = loadEnvironment({ MIAA_BUILD_VARIANT: variant, CI: '1' });
   const workers = Number(env.MIAA_ANDROID_BUILD_WORKERS || '1');
   if (!Number.isInteger(workers) || workers < 1 || workers > 8)
     throw new Error('MIAA_ANDROID_BUILD_WORKERS must be an integer from 1 to 8.');
   resolveEnvironment(env);
+  releaseMetadata(env);
+  const signing = variant === 'production' ? productionSigning(env, role, root) : null;
   const sdk = env.ANDROID_HOME || env.ANDROID_SDK_ROOT;
   if (!sdk || !existsSync(sdk))
     throw new Error('Install Android Studio/SDK and set ANDROID_HOME. See docs/BUILDING.md.');
@@ -37,7 +39,8 @@ cli(async () => {
   const native = join(appDirectory(role), 'android');
   entrypoints.assertAndroidEntrypoints(
     native,
-    apps[role].applicationId + (variant === 'preview' ? '.preview' : '.dev'),
+    apps[role].applicationId +
+      (variant === 'production' ? '' : variant === 'preview' ? '.preview' : '.dev'),
   );
   await checkMonochromeIcon(
     join(native, 'app/src/main/res/mipmap-xxxhdpi/ic_launcher_monochrome.webp'),
@@ -70,7 +73,7 @@ cli(async () => {
           `-D${protocol}.proxyPort=${proxy.port || (proxy.protocol === 'https:' ? '443' : '80')}`,
         );
   }
-  const task = variant === 'preview' ? ':app:assembleRelease' : ':app:assembleDebug';
+  const task = variant !== 'development' ? ':app:assembleRelease' : ':app:assembleDebug';
   run(
     java,
     [
@@ -88,10 +91,23 @@ cli(async () => {
     ],
     { cwd: native, env },
   );
-  const flavor = variant === 'preview' ? 'release' : 'debug';
+  const flavor = variant !== 'development' ? 'release' : 'debug';
   const source = join(native, 'app', 'build', 'outputs', 'apk', flavor, `app-${flavor}.apk`);
   if (!existsSync(source))
     throw new Error('Gradle succeeded but the expected APK was not produced.');
+  const signature = execFileSync(
+    java,
+    [
+      '-jar',
+      join(sdk, 'build-tools', '37.0.0', 'lib', 'apksigner.jar'),
+      'verify',
+      '--verbose',
+      '--print-certs',
+      source,
+    ],
+    { env, encoding: 'utf8' },
+  );
+  assertSigner(signature, signing?.certificateSha256);
   const version = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')).version;
   mkdirSync(join(root, 'artifacts'), { recursive: true });
   const destination = join(root, 'artifacts', `miaa-${role}-${variant}-v${version}.apk`);

@@ -134,6 +134,17 @@ for (const [index, app] of apps.entries()) {
     ).toBeGreaterThanOrEqual(18);
     if (app.role === 'mother' || app.role === 'cyclist' || app.role === 'admin') {
       await page.getByRole('tab', { name: 'Workspace', exact: true }).click();
+      await expect(
+        page.getByRole('heading', {
+          name:
+            app.role === 'mother'
+              ? 'Kitchen workspace'
+              : app.role === 'cyclist'
+                ? 'Cyclist workspace'
+                : 'Admin workspace',
+          exact: true,
+        }),
+      ).toBeVisible();
       await page
         .getByRole('button', { name: app.module, exact: true })
         .filter({ visible: true })

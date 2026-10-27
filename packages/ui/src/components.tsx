@@ -77,6 +77,7 @@ export function Page({ children }: { children: React.ReactNode }) {
       style={styles.page}
       contentContainerStyle={styles.pageContent}
       keyboardShouldPersistTaps="handled"
+      keyboardDismissMode="on-drag"
     >
       <View style={styles.pageInner}>{children}</View>
     </ScrollView>
@@ -188,7 +189,10 @@ export function Notice({
         tone === 'error' && styles.errorNotice,
         tone === 'success' && styles.successNotice,
       ]}
-      accessibilityLiveRegion="polite"
+      accessible
+      accessibilityRole={tone === 'error' ? 'alert' : 'text'}
+      accessibilityLabel={`${title}. ${body}`}
+      accessibilityLiveRegion={tone === 'error' ? 'assertive' : 'polite'}
     >
       <Icon name={icon} size={22} />
       <View style={styles.flex}>

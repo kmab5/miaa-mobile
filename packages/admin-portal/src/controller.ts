@@ -434,6 +434,7 @@ export function createAdminController(options: {
       validateAction(a);
       const copy = JSON.parse(JSON.stringify(a)) as Action;
       if (copy.body) Object.freeze(copy.body);
+      if (copy.guard) Object.freeze(copy.guard);
       Object.freeze(copy);
       const r = Object.freeze({
         action: copy,

@@ -1,6 +1,6 @@
 {
   "name": "miaa-mobile",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "private": true,
   "description": "Four Mi'aa mobile apps sharing one API, design system and localization.",
   "workspaces": [
@@ -35,7 +35,8 @@
     "verify:android": "node scripts/verify-android.mjs",
     "security:audit": "npm audit",
     "assets:generate": "node scripts/generate-assets.mjs",
-    "verify:exports": "node scripts/inspect-exports.mjs"
+    "verify:exports": "node scripts/inspect-exports.mjs",
+    "release:check": "node scripts/release-check.mjs"
   },
   "devDependencies": {
     "@eslint/js": "9.39.5",

@@ -1,4 +1,4 @@
-import type { ApiFailure, ApiSuccess, AppRole, MobileSession, MobileUser } from './contracts';
+import type { ApiSuccess, AppRole, MobileSession, MobileUser } from './contracts';
 /** Implement with native secure credential storage. Never AsyncStorage/localStorage. */
 export interface TokenStorage {
   get(): Promise<string | null>;
@@ -34,6 +34,43 @@ export type MobileApiOptions = {
   timeoutMs?: number;
   allowDevelopmentHttp?: boolean;
 };
+/** Bound timers and support both RFC Retry-After forms without allowing timer overflow. */
+export function retryAfter(
+  raw: string | null,
+  status: number,
+  now = Date.now(),
+): number | undefined {
+  let seconds: number | undefined;
+  if (raw !== null && /^\d+$/.test(raw.trim())) seconds = Number(raw.trim());
+  else if (raw !== null && /^[A-Z][a-z]{2}, /.test(raw))
+    seconds = Math.ceil((Date.parse(raw) - now) / 1000);
+  if (seconds !== undefined && Number.isFinite(seconds) && seconds > 0)
+    return Math.min(Math.ceil(seconds), 86400);
+  return status === 429 ? 60 : undefined;
+}
+function failure(raw: unknown) {
+  const record = (v: unknown): Record<string, unknown> =>
+    v !== null && typeof v === 'object' && !Array.isArray(v) ? (v as Record<string, unknown>) : {};
+  const envelope = record(raw),
+    error = record(envelope.error);
+  const bounded = (v: unknown, max: number) =>
+    typeof v === 'string' && v.length > 0 && v.length <= max ? v : undefined;
+  const code = bounded(error.code, 80);
+  const details = Object.entries(record(error.details));
+  return {
+    code: code && /^[a-z][a-z0-9_]*$/.test(code) ? code : 'http_error',
+    message: bounded(error.message, 2000) ?? 'The server could not complete this request.',
+    requestId: bounded(envelope.requestId, 120),
+    details:
+      details.length > 0 &&
+      details.length <= 30 &&
+      details.every(
+        ([key, value]) => /^[a-zA-Z][a-zA-Z0-9_.]{0,79}$/.test(key) && bounded(value, 500),
+      )
+        ? (Object.fromEntries(details) as Record<string, string>)
+        : undefined,
+  };
+}
 /** No automatic write retries. A Render cold start gets 90 seconds by default. */
 export function createMobileApi(options: MobileApiOptions) {
   const url = new URL(options.origin);
@@ -69,6 +106,8 @@ export function createMobileApi(options: MobileApiOptions) {
     else input.signal?.addEventListener('abort', abort, { once: true });
     const timer = setTimeout(() => controller.abort(), options.timeoutMs ?? 90000);
     try {
+      if (controller.signal.aborted)
+        throw new MobileApiError(0, 'request_aborted', 'The request was cancelled.');
       const res = await send(`${origin}/api/v1/${path}`, {
         method: input.method ?? 'GET',
         credentials: 'omit',
@@ -88,15 +127,14 @@ export function createMobileApi(options: MobileApiOptions) {
           await (options.storage.clearIfCurrent
             ? options.storage.clearIfCurrent(token)
             : options.storage.clear());
-        const envelope = raw as ApiFailure | null;
-        const error = envelope?.error;
+        const error = failure(raw);
         throw new MobileApiError(
           res.status,
-          error?.code ?? 'http_error',
-          error?.message ?? 'The server could not complete this request.',
-          envelope?.requestId,
-          Number(res.headers.get('retry-after')) || undefined,
-          error?.details,
+          error.code,
+          error.message,
+          error.requestId,
+          retryAfter(res.headers.get('retry-after'), res.status),
+          error.details,
         );
       }
       if (!raw || typeof raw !== 'object' || !('data' in raw))

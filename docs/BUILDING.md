@@ -41,13 +41,13 @@ npm run build:android -- cyclist preview
 npm run build:android -- client preview
 ```
 
-Or run `npm run verify:android` to build all four sequentially. Output: `artifacts/miaa-APP-preview-v0.3.0.apk`. These APKs bundle JS and assets and do not need the Metro server. They use Expo's test signing configuration and a `.preview` application ID; they are not production-signed releases and must not be uploaded as final store builds.
+Or run `npm run verify:android` to build all four sequentially. Output: `artifacts/miaa-APP-preview-v0.8.0.apk`. These APKs bundle JS and assets and do not need the Metro server. They use Expo's test signing configuration and a `.preview` application ID; they are not production-signed releases and must not be uploaded as final store builds.
 
-Native builds use one Gradle worker and disable project parallelism by default to control memory use. Run exports and native compilation separately. On a machine with spare memory, set `MIAA_ANDROID_BUILD_WORKERS` to an integer from 1 to 8 to change the Gradle worker count. CI explicitly selects ARM64 previews, matching the locally inspected packages.
+Native builds use one Gradle worker and disable project parallelism by default to control memory use. Run exports and native compilation separately. On a machine with spare memory, set `MIAA_ANDROID_BUILD_WORKERS` to an integer from 1 to 8 to change the Gradle worker count. The Round 8 supplied previews select ARM64, matching their artifact inspection records.
 
 By default the script builds `arm64-v8a,x86_64`, covering current physical phones and common emulators. To reduce a local build to ARM64, set `MIAA_ANDROID_ARCHITECTURES=arm64-v8a` in your shell before invoking the same command. Never assume an ARM64-only APK can run on an x86 emulator.
 
-Install using the Android file installer or `adb install -r artifacts/miaa-client-preview-v0.3.0.apk` (substitute app name). First installation may require allowing installs from your chosen file manager. Test apps cannot overwrite production apps because their IDs differ. A signature mismatch on an existing test installation requires uninstalling that test app first, which removes local app data. Resolve any uncertain pending order with an administrator before uninstalling or changing the signing key.
+Install using the Android file installer or `adb install -r artifacts/miaa-client-preview-v0.8.0.apk` (substitute app name). First installation may require allowing installs from your chosen file manager. Test apps cannot overwrite production apps because their IDs differ. A signature mismatch on an existing test installation requires uninstalling that test app first, which removes local app data. Resolve any uncertain pending order with an administrator before uninstalling or changing the signing key.
 
 The CNG finalization plugin normalizes the known package-refactor/splash-template duplicate entry points, preserving splash registration. It refuses conflicting native edits. The build script verifies a single correctly namespaced MainActivity/MainApplication pair before Gradle.
 
@@ -55,7 +55,7 @@ The script clears the selected app’s generated image cache, regenerates `apps/
 
 ## Tests-only CI and delivery
 
-The **Mobile tests** workflow runs `npm ci`, `npm run check` and `npm run doctor` on pushes, pull requests and manual dispatch. It does not export platforms, compile native apps or upload APKs. Incremental deliveries contain source updates and test results only, following the user's 2026-10-26 instruction.
+The **Mobile tests** workflow runs `npm ci`, `npm run check` and `npm run doctor` on pushes, pull requests and manual dispatch. It does not export platforms, compile native apps or upload APKs. The standing preference is source/tests-only delivery. The owner explicitly requested Android builds for the final Round 8 delivery; the default CI is unchanged.
 
 The native commands above are retained for the owner's manual use. Browser tests require existing web exports and Chromium; running them does not imply that a new platform build should be prepared automatically. Earlier build records are historical observations, not files included in this source update. Hosted CI can only be called green after the actual workflow runs on the pushed changes.
 
@@ -81,6 +81,6 @@ npm run test:ui
 
 Browser checks serve each app on loopback ports 3100–3103, exercise protected navigation, role-specific sign-in, Client signup, account security, logout, memory-only credentials, narrow layouts, language persistence and public connection feedback. This helps validate shared UI and routing; it does not replace Android/iOS device checks.
 
-## Future production signing
+## Production signing
 
-Production identifiers are reserved now, but `build:android` intentionally refuses a `production` argument until release signing is implemented. Round 8 will add stable private keystores, version increments and release builds. `.gitignore` already excludes signing keys, `build-key`, certificates and credential files. Keep the same production signing identity when updating a published app; do not use a preview/debug key for production.
+Production identifiers are reserved, and `build:android` refuses an unsigned `production` invocation unless external signing credentials and the expected certificate are supplied. Round 8 adds environment-only production signing, shared build-number validation and post-build certificate verification. See [RELEASE.md](RELEASE.md). `.gitignore` already excludes signing keys, `build-key`, certificates and credential files. Keep the same production signing identity when updating a published app; do not use a preview/debug key for production.

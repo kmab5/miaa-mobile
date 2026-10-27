@@ -11,10 +11,12 @@ Four separate apps share one API, design system and translation layer. Android i
 | 5     | Cyclist run, sticker lookup, collection, calling/navigation, confirmation, earnings and staff meals                    | Assigned delivery progresses safely through completion                                   |
 | 6     | Admin daily board, people, catalog, assignments, subscriptions, payments, support and staff credentials                | Admin coordinates the other apps through the shared API                                  |
 | 7     | Admin finance, payouts, stock, analytics, archive and restoration                                                      | Correct backend-derived reports and preserved history                                    |
-| 8     | Full cross-app verification, poor connections, accessibility, release signing/versioning and acceptance                | Reproducible release builds and verified device workflows                                |
+| 8     | Full cross-app verification, poor connections, accessibility, release signing/versioning and acceptance                | Source/browser/build verification with explicit owner device/signing acceptance          |
 
-Rounds 1–7 are implemented. Password/Telegram sign-in, verified Client signup, secure sessions and account security work against the existing API contract. Client, Mother, Cyclist and Admin daily/financial/stock/archive workflows are active; Round 8 acceptance remains; no sample customer records, invented totals or simulated successful business actions are shown.
+Rounds 1–8 are implemented. Password/Telegram sign-in, verified Client signup, secure sessions and account security work against the existing API contract. Client, Mother, Cyclist and Admin daily/financial/stock/archive workflows are active; final owner device/signing acceptance remains in [ACCEPTANCE.md](ACCEPTANCE.md); no sample customer records, invented totals or simulated successful business actions are shown.
 
 Payments remain off-platform. Pending-payment deliveries stay operational. Deleted records retain history while active dependent work stops. Restoration never silently restarts cancelled work. The backend enforces those rules; mobile screens cannot grant exceptions.
 
 Native push notifications and a background mutation outbox are separate enhancements; the first usable apps will provide safe reads, local drafts and explicit retry behavior.
+
+Round 8 delivers standalone ARM64 Android previews at the owner’s request. Actual production signing and device/real-account acceptance are separate handoff requirements; no iOS native compilation is claimed. See [RELEASE.md](RELEASE.md). Default hosted CI remains tests only.

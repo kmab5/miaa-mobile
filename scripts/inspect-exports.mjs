@@ -1,6 +1,7 @@
 /** Verify final app source against Metro's native and indexed web source maps. */
-import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { createHash } from 'node:crypto';
 import { roles } from '../config/apps.cjs';
 import { root, cli } from './shared.mjs';
 function* sources(map) {
@@ -12,6 +13,8 @@ function* sources(map) {
   }
 }
 cli(() => {
+  const reports = [];
+  const version = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')).version;
   for (const role of roles)
     for (const platform of ['android', 'ios', 'web']) {
       const directory = join(root, 'apps', role, 'dist/_expo/static/js', platform);
@@ -26,10 +29,13 @@ cli(() => {
           const match = path.match(
             /(?:^|\/)((?:packages\/[^/]+\/src|apps\/(?:admin|mother|cyclist|client)\/app)\/[^?]+)$/,
           );
+          if (/(?:^|\/)(?:tests\/fixtures|node_modules\/(?:node-forge|zod))\//.test(path))
+            throw new Error(`${role}/${platform} includes test data or advisory tooling: ${path}`);
           if (!match) continue;
           const relative = match[1];
-          if (role !== 'client' && relative.startsWith('packages/client-portal/'))
-            throw new Error(`${role}/${platform} contains Client workflows.`);
+          const portal = relative.match(/^packages\/(admin|mother|cyclist|client)-portal\//)?.[1];
+          if (portal && portal !== role)
+            throw new Error(`${role}/${platform} contains ${portal} workflows.`);
           if (relative.startsWith('apps/') && !relative.startsWith(`apps/${role}/`))
             throw new Error(`${role}/${platform} contains another app's route: ${relative}`);
           const original = join(root, relative);
@@ -45,6 +51,27 @@ cli(() => {
         'packages/auth/src/validation.ts',
         'packages/shell/src/sign-in.tsx',
         'packages/shell/src/security.tsx',
+        ...(['mother', 'cyclist', 'admin'].includes(role)
+          ? [
+              'contracts.ts',
+              'controller.ts',
+              'provider.tsx',
+              'screens.tsx',
+              'components.tsx',
+              'text.ts',
+              ...(role !== 'cyclist' ? ['storage.ts'] : []),
+              ...(role === 'admin'
+                ? [
+                    'forms.ts',
+                    'business-contracts.ts',
+                    'business-forms.ts',
+                    'business-screens.tsx',
+                    'business-text.ts',
+                    'archive.tsx',
+                  ]
+                : []),
+            ].map((file) => `packages/${role}-portal/src/${file}`)
+          : []),
         ...(role === 'client'
           ? [
               'apps/client/app/client/[screen].tsx',
@@ -61,6 +88,28 @@ cli(() => {
           : []),
       ])
         if (!owned.has(required)) throw new Error(`${role}/${platform} omitted ${required}`);
+      const hashes = Object.fromEntries(
+        [...owned].sort().map((path) => [
+          path,
+          createHash('sha256')
+            .update(readFileSync(join(root, path)))
+            .digest('hex'),
+        ]),
+      );
+      reports.push({
+        role,
+        platform,
+        ownedRuntimeModulesMatchingSource: owned.size,
+        ownedSourceDigestSha256: createHash('sha256').update(JSON.stringify(hashes)).digest('hex'),
+        crossRoleWorkflows: false,
+        advisoryTooling: false,
+        testFixtures: false,
+      });
       console.log(`${role}/${platform}: ${owned.size} app modules match final source.`);
     }
+  mkdirSync(join(root, 'artifacts'), { recursive: true });
+  writeFileSync(
+    join(root, 'artifacts', `exports-v${version}.json`),
+    JSON.stringify({ version, exports: reports }, null, 2) + '\n',
+  );
 });

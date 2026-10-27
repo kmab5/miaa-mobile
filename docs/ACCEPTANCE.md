@@ -1,3 +1,20 @@
+# Final handoff acceptance — Round 8
+
+Automated source, cross-app HTTP fixture, native-component, browser and compilation/artifact checks are recorded in [VALIDATION.md](../VALIDATION.md). The eight-round implementation plan is complete. The following owner checks remain **unverified**, because they require real accounts/devices or private production signing:
+
+| Owner check                | Required evidence                                                                                                                                                                        |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Real backend journey       | An authorized test subscription moves from Admin/Client through Mother packaging, Cyclist collection/handover and Client history; verify pending-payment behavior in the actual database |
+| Archive and finance        | Check real soft-deletion cascades, restored client access, staff states, stock-derived balances, linked expenses, historical payout rates and report date allocation                     |
+| Device recovery            | Force-stop/restart and sign out/in with an uncertain order, request or Admin action; preserve the journal and resolve the recorded outcome before another intention                      |
+| OS integration             | Install all four ARM64 previews; verify SecureStore/backup behavior, call/map handlers, permission prompts, revoked sessions and foreground validation                                   |
+| Accessibility and language | TalkBack/VoiceOver, large system text, narrow phones, keyboard navigation/avoidance and human Amharic editorial review                                                                   |
+| Production distribution    | Provide private stable signing identities, increment distributed build numbers, verify certificate fingerprints and complete owner production/device acceptance; compile iOS on macOS    |
+
+The supplied Android APKs are standalone previews. Their signatures, native bindings, app identity, bundled config/source and permissions are inspected; an emulator or physical-device run is not implied. No private production mutation is performed by automation. See [RELEASE.md](RELEASE.md) for install, recovery and signing instructions. Older checklists below remain useful and are historical acceptance requirements, not completed device tests.
+
+---
+
 # Round 7 acceptance additions
 
 These require authorized Admin accounts and actual devices. Automated financial/stock/archive actions use fixtures only.
@@ -28,7 +45,7 @@ These need authorized Admin accounts/devices; automated private actions use fixt
 - Lose responses and restart/logout/switch admins. Test blocked/corrupt storage, concurrent stale reviews, rate limits, explicit result checking and no automatic resend. Native linking for Admin Crypto and real Android/iOS SecureStore remain device acceptance.
 - Verify keyboard/large-text/screen-reader behavior, long lists/notes, English/Amharic and human Amharic editorial accuracy. Test operations around EAT rollover and record changes after preflight; the API has no new compare-and-swap contract.
 
-No Round 6 platform exports or native builds were run. Finance/payouts/stock/analytics/archive remain Round 7. See [ADMIN.md](ADMIN.md) and [VALIDATION.md](../VALIDATION.md).
+No Round 6 platform exports or native builds were run. Those workflows were subsequently implemented in Round 7. See [ADMIN.md](ADMIN.md) and [VALIDATION.md](../VALIDATION.md).
 
 ---
 

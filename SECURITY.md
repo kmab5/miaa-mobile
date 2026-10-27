@@ -45,3 +45,9 @@ Only the Admin app imports its operational package, and the backend still author
 An authenticated-owner/origin/variant action journal is committed before every mutation. Native values use device-only SecureStore chunks and an atomic head; browser preview uses localStorage and Web Locks. Pending non-sensitive payloads can include PII and payment references, disclosed in the UI. Password text is excluded from persistence, hidden in review and cleared from the editor on submission. Settled payloads are removed and minimal revision receipts remain to reject stale concurrent reviews.
 
 Uncertain results block another write until exact-key order retry or explicit result/office review. There is no automatic resend. This does not introduce backend optimistic concurrency, merge independent-device intentions or recover deleted app data. See [ADMIN.md](docs/ADMIN.md) for detailed safeguards and acceptance limits.
+
+## Final-round transport and signing checks
+
+Server error envelopes are validated before exposing codes, field errors or support references to UI components. Retry-After accepts bounded integer seconds or an HTTP date; malformed/missing rate-limit guidance uses a bounded fallback. Already-aborted requests never reach fetch. Mother read failures also honor the shared cooldown, and older short delays cannot shorten a longer cooldown. Reviewed Admin guards are frozen with their action copy.
+
+Android production signing requires an external keystore, environment-only passwords/alias and an expected certificate digest. The plugin refuses unknown templates; the build verifies the APK signer before publishing a local artifact and rejects a standard debug certificate for production. Preview builds retain test identities and signing. No signing credentials are stored in Expo config or delivered. See [RELEASE.md](docs/RELEASE.md).

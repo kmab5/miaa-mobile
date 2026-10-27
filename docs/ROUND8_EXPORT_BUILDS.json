@@ -1,0 +1,113 @@
+{
+  "version": "0.8.0",
+  "exports": [
+    {
+      "role": "admin",
+      "platform": "android",
+      "ownedRuntimeModulesMatchingSource": 56,
+      "ownedSourceDigestSha256": "a71447ee235294ad1b7e261adf67a4d334bb2a6553cdd077d2098edea330a508",
+      "crossRoleWorkflows": false,
+      "advisoryTooling": false,
+      "testFixtures": false
+    },
+    {
+      "role": "admin",
+      "platform": "ios",
+      "ownedRuntimeModulesMatchingSource": 56,
+      "ownedSourceDigestSha256": "a71447ee235294ad1b7e261adf67a4d334bb2a6553cdd077d2098edea330a508",
+      "crossRoleWorkflows": false,
+      "advisoryTooling": false,
+      "testFixtures": false
+    },
+    {
+      "role": "admin",
+      "platform": "web",
+      "ownedRuntimeModulesMatchingSource": 57,
+      "ownedSourceDigestSha256": "94d16acb291bbd66ba3c317fa57654ce88d92bb0b78d96e2b0c89b5da6d4e48d",
+      "crossRoleWorkflows": false,
+      "advisoryTooling": false,
+      "testFixtures": false
+    },
+    {
+      "role": "mother",
+      "platform": "android",
+      "ownedRuntimeModulesMatchingSource": 50,
+      "ownedSourceDigestSha256": "5eca8c1577ff36c54149fbd64952e130aa18ab934bea80fbe6d91253955f1243",
+      "crossRoleWorkflows": false,
+      "advisoryTooling": false,
+      "testFixtures": false
+    },
+    {
+      "role": "mother",
+      "platform": "ios",
+      "ownedRuntimeModulesMatchingSource": 50,
+      "ownedSourceDigestSha256": "5eca8c1577ff36c54149fbd64952e130aa18ab934bea80fbe6d91253955f1243",
+      "crossRoleWorkflows": false,
+      "advisoryTooling": false,
+      "testFixtures": false
+    },
+    {
+      "role": "mother",
+      "platform": "web",
+      "ownedRuntimeModulesMatchingSource": 51,
+      "ownedSourceDigestSha256": "39ba0a68589f797bb881a519375df988f4c1c892f61aa71f30a188385c590030",
+      "crossRoleWorkflows": false,
+      "advisoryTooling": false,
+      "testFixtures": false
+    },
+    {
+      "role": "cyclist",
+      "platform": "android",
+      "ownedRuntimeModulesMatchingSource": 49,
+      "ownedSourceDigestSha256": "b004dd6b259e7d2eeaa1549bf9524c8f9998531a7afd9cb0bf975d625b6aedee",
+      "crossRoleWorkflows": false,
+      "advisoryTooling": false,
+      "testFixtures": false
+    },
+    {
+      "role": "cyclist",
+      "platform": "ios",
+      "ownedRuntimeModulesMatchingSource": 49,
+      "ownedSourceDigestSha256": "b004dd6b259e7d2eeaa1549bf9524c8f9998531a7afd9cb0bf975d625b6aedee",
+      "crossRoleWorkflows": false,
+      "advisoryTooling": false,
+      "testFixtures": false
+    },
+    {
+      "role": "cyclist",
+      "platform": "web",
+      "ownedRuntimeModulesMatchingSource": 50,
+      "ownedSourceDigestSha256": "44dc622c4d93287c0c4ffbaad759949bc6cd904f371d824f370a5f9639200184",
+      "crossRoleWorkflows": false,
+      "advisoryTooling": false,
+      "testFixtures": false
+    },
+    {
+      "role": "client",
+      "platform": "android",
+      "ownedRuntimeModulesMatchingSource": 50,
+      "ownedSourceDigestSha256": "ce9174b132950770a09f46e13e82c2c16898e4ad584aa58c430829aec104bbb0",
+      "crossRoleWorkflows": false,
+      "advisoryTooling": false,
+      "testFixtures": false
+    },
+    {
+      "role": "client",
+      "platform": "ios",
+      "ownedRuntimeModulesMatchingSource": 50,
+      "ownedSourceDigestSha256": "ce9174b132950770a09f46e13e82c2c16898e4ad584aa58c430829aec104bbb0",
+      "crossRoleWorkflows": false,
+      "advisoryTooling": false,
+      "testFixtures": false
+    },
+    {
+      "role": "client",
+      "platform": "web",
+      "ownedRuntimeModulesMatchingSource": 51,
+      "ownedSourceDigestSha256": "55568d023da40bb654dbed8c87d77fd03c68178f208186818d4ec61f9588a54d",
+      "crossRoleWorkflows": false,
+      "advisoryTooling": false,
+      "testFixtures": false
+    }
+  ]
+}

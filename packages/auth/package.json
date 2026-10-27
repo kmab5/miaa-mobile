@@ -1,12 +1,12 @@
 {
   "name": "@miaa/auth",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "private": true,
   "main": "src/index.ts",
   "types": "src/index.ts",
   "dependencies": {
-    "@miaa/api": "0.7.0",
-    "@miaa/config": "0.7.0",
+    "@miaa/api": "0.8.0",
+    "@miaa/config": "0.8.0",
     "expo-secure-store": "58.0.2"
   },
   "peerDependencies": {

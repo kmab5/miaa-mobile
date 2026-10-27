@@ -1,0 +1,313 @@
+{
+  "version": "0.8.0",
+  "round": 8,
+  "buildVariant": "preview",
+  "allFourCompiled": true,
+  "allFourInspected": true,
+  "nativeIosCompiled": false,
+  "physicalDeviceTested": false,
+  "emulatorTested": false,
+  "productionSigning": false,
+  "builds": [
+    {
+      "version": "0.8.0",
+      "round": 8,
+      "verifiedAt": "2026-10-26",
+      "role": "admin",
+      "file": "miaa-admin-preview-v0.8.0.apk",
+      "bytes": 33220721,
+      "sha256": "896db011fa1023ce8e64af32cb97f44958928acc6b4de3ca49a947e617beba42",
+      "applicationId": "com.kmab.miaa.admin.preview",
+      "scheme": "miaa-admin-preview",
+      "apiOrigin": "https://miaa.onrender.com",
+      "versionCode": 8,
+      "minimumSdk": 24,
+      "targetSdk": 36,
+      "compileSdk": 37,
+      "abi": ["arm64-v8a"],
+      "signatureVerified": true,
+      "signerCertificateSha256": "fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c",
+      "productionSigning": false,
+      "standaloneJsBundle": true,
+      "bundleSha256": "040706c39507738cccae2a41b6ec02d31b77f5f8faa5e8755ea7a23f6211b018",
+      "nativeModules": {
+        "ExpoCrypto": {
+          "nativeBindingInDex": true,
+          "registeredModuleClassInDex": true
+        },
+        "ExpoSecureStore": {
+          "nativeBindingInDex": true,
+          "registeredModuleClassInDex": true
+        }
+      },
+      "secureStoreBackupExclusions": [
+        {
+          "attribute": "fullBackupContent",
+          "resource": "res/-K.xml",
+          "excludesSecureStore": true
+        },
+        {
+          "attribute": "dataExtractionRules",
+          "resource": "res/Hq.xml",
+          "excludesSecureStore": true
+        }
+      ],
+      "cleartextTraffic": false,
+      "debuggable": false,
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.VIBRATE",
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT",
+        "com.kmab.miaa.admin.preview.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+      ],
+      "bundledFontSha256": {
+        "Poppins-Regular.ttf": "707fdc5c8bab57a90061c6a8ed7b70d5ffb82fc810e994e79f90bace890c255a",
+        "NotoSansEthiopic-Regular.ttf": "321ff186e0f066a46257c3008e8a22070720350a9d17f8a32d0d3da53f52e7a2",
+        "NotoSansEthiopic-SemiBold.ttf": "03430809d926c4c048af2ef900d2a041d34894ea2d8fb13f2219b2315199938f",
+        "Poppins-SemiBold.ttf": "248c0244b350ec68880996aa6be6d7796274b49992d5fcbbefe251906aa4ea36"
+      },
+      "bundledFontLicenseNotice": true,
+      "ownedRuntimeModulesMatchingSource": 56,
+      "ownedSourceDigestSha256": "a71447ee235294ad1b7e261adf67a4d334bb2a6553cdd077d2098edea330a508",
+      "matchesFinalAndroidExportSources": true,
+      "advisoryPackagesInJavaScriptGraph": [],
+      "testFixturesInJavaScriptGraph": false,
+      "physicalDeviceTested": false,
+      "emulatorTested": false,
+      "nativeIosCompiled": false,
+      "toolchain": {
+        "jdk": "Temurin 17.0.21+9",
+        "gradle": "9.4.1",
+        "ndk": "27.1.12297006",
+        "cmake": "3.22.1",
+        "node": "24.22.1",
+        "npm": "11.9.0"
+      }
+    },
+    {
+      "version": "0.8.0",
+      "round": 8,
+      "verifiedAt": "2026-10-26",
+      "role": "mother",
+      "file": "miaa-mother-preview-v0.8.0.apk",
+      "bytes": 33118297,
+      "sha256": "83741e88ceb3f8edf3a867087709671f2733836947b294c12cdc609fe5fae46b",
+      "applicationId": "com.kmab.miaa.mother.preview",
+      "scheme": "miaa-mother-preview",
+      "apiOrigin": "https://miaa.onrender.com",
+      "versionCode": 8,
+      "minimumSdk": 24,
+      "targetSdk": 36,
+      "compileSdk": 37,
+      "abi": ["arm64-v8a"],
+      "signatureVerified": true,
+      "signerCertificateSha256": "fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c",
+      "productionSigning": false,
+      "standaloneJsBundle": true,
+      "bundleSha256": "e78836c91b5da6710e0b185d06fd652ed398ef7284b803fd5d86580fd20cfd47",
+      "nativeModules": {
+        "ExpoCrypto": {
+          "nativeBindingInDex": true,
+          "registeredModuleClassInDex": true
+        },
+        "ExpoSecureStore": {
+          "nativeBindingInDex": true,
+          "registeredModuleClassInDex": true
+        }
+      },
+      "secureStoreBackupExclusions": [
+        {
+          "attribute": "fullBackupContent",
+          "resource": "res/-K.xml",
+          "excludesSecureStore": true
+        },
+        {
+          "attribute": "dataExtractionRules",
+          "resource": "res/Hq.xml",
+          "excludesSecureStore": true
+        }
+      ],
+      "cleartextTraffic": false,
+      "debuggable": false,
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.VIBRATE",
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT",
+        "com.kmab.miaa.mother.preview.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+      ],
+      "bundledFontSha256": {
+        "Poppins-Regular.ttf": "707fdc5c8bab57a90061c6a8ed7b70d5ffb82fc810e994e79f90bace890c255a",
+        "NotoSansEthiopic-Regular.ttf": "321ff186e0f066a46257c3008e8a22070720350a9d17f8a32d0d3da53f52e7a2",
+        "NotoSansEthiopic-SemiBold.ttf": "03430809d926c4c048af2ef900d2a041d34894ea2d8fb13f2219b2315199938f",
+        "Poppins-SemiBold.ttf": "248c0244b350ec68880996aa6be6d7796274b49992d5fcbbefe251906aa4ea36"
+      },
+      "bundledFontLicenseNotice": true,
+      "ownedRuntimeModulesMatchingSource": 50,
+      "ownedSourceDigestSha256": "5eca8c1577ff36c54149fbd64952e130aa18ab934bea80fbe6d91253955f1243",
+      "matchesFinalAndroidExportSources": true,
+      "advisoryPackagesInJavaScriptGraph": [],
+      "testFixturesInJavaScriptGraph": false,
+      "physicalDeviceTested": false,
+      "emulatorTested": false,
+      "nativeIosCompiled": false,
+      "toolchain": {
+        "jdk": "Temurin 17.0.21+9",
+        "gradle": "9.4.1",
+        "ndk": "27.1.12297006",
+        "cmake": "3.22.1",
+        "node": "24.22.1",
+        "npm": "11.9.0"
+      }
+    },
+    {
+      "version": "0.8.0",
+      "round": 8,
+      "verifiedAt": "2026-10-26",
+      "role": "cyclist",
+      "file": "miaa-cyclist-preview-v0.8.0.apk",
+      "bytes": 33082533,
+      "sha256": "27600283d3e795db91d9bf49fe9c429526eeb610b0c76fd6b8a1a65167d6c082",
+      "applicationId": "com.kmab.miaa.cyclist.preview",
+      "scheme": "miaa-cyclist-preview",
+      "apiOrigin": "https://miaa.onrender.com",
+      "versionCode": 8,
+      "minimumSdk": 24,
+      "targetSdk": 36,
+      "compileSdk": 37,
+      "abi": ["arm64-v8a"],
+      "signatureVerified": true,
+      "signerCertificateSha256": "fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c",
+      "productionSigning": false,
+      "standaloneJsBundle": true,
+      "bundleSha256": "8c6af12854c0b3fbfbea7a0e6c5cbf325346d9235e73db36046f1da6acc16716",
+      "nativeModules": {
+        "ExpoSecureStore": {
+          "nativeBindingInDex": true,
+          "registeredModuleClassInDex": true
+        }
+      },
+      "secureStoreBackupExclusions": [
+        {
+          "attribute": "fullBackupContent",
+          "resource": "res/-K.xml",
+          "excludesSecureStore": true
+        },
+        {
+          "attribute": "dataExtractionRules",
+          "resource": "res/Hq.xml",
+          "excludesSecureStore": true
+        }
+      ],
+      "cleartextTraffic": false,
+      "debuggable": false,
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.VIBRATE",
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT",
+        "com.kmab.miaa.cyclist.preview.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+      ],
+      "bundledFontSha256": {
+        "Poppins-Regular.ttf": "707fdc5c8bab57a90061c6a8ed7b70d5ffb82fc810e994e79f90bace890c255a",
+        "NotoSansEthiopic-Regular.ttf": "321ff186e0f066a46257c3008e8a22070720350a9d17f8a32d0d3da53f52e7a2",
+        "NotoSansEthiopic-SemiBold.ttf": "03430809d926c4c048af2ef900d2a041d34894ea2d8fb13f2219b2315199938f",
+        "Poppins-SemiBold.ttf": "248c0244b350ec68880996aa6be6d7796274b49992d5fcbbefe251906aa4ea36"
+      },
+      "bundledFontLicenseNotice": true,
+      "ownedRuntimeModulesMatchingSource": 49,
+      "ownedSourceDigestSha256": "b004dd6b259e7d2eeaa1549bf9524c8f9998531a7afd9cb0bf975d625b6aedee",
+      "matchesFinalAndroidExportSources": true,
+      "advisoryPackagesInJavaScriptGraph": [],
+      "testFixturesInJavaScriptGraph": false,
+      "physicalDeviceTested": false,
+      "emulatorTested": false,
+      "nativeIosCompiled": false,
+      "toolchain": {
+        "jdk": "Temurin 17.0.21+9",
+        "gradle": "9.4.1",
+        "ndk": "27.1.12297006",
+        "cmake": "3.22.1",
+        "node": "24.22.1",
+        "npm": "11.9.0"
+      }
+    },
+    {
+      "version": "0.8.0",
+      "round": 8,
+      "verifiedAt": "2026-10-26",
+      "role": "client",
+      "file": "miaa-client-preview-v0.8.0.apk",
+      "bytes": 33132173,
+      "sha256": "a6420769e018fbc1f5b44a7876effe56e19f40e0b231efe6b9e49bd00eb82a1e",
+      "applicationId": "com.kmab.miaa.client.preview",
+      "scheme": "miaa-client-preview",
+      "apiOrigin": "https://miaa.onrender.com",
+      "versionCode": 8,
+      "minimumSdk": 24,
+      "targetSdk": 36,
+      "compileSdk": 37,
+      "abi": ["arm64-v8a"],
+      "signatureVerified": true,
+      "signerCertificateSha256": "fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c",
+      "productionSigning": false,
+      "standaloneJsBundle": true,
+      "bundleSha256": "0230470a4db01b9116b638a8a2176ae885653e637d86ab106a75188f07b77d0d",
+      "nativeModules": {
+        "ExpoCrypto": {
+          "nativeBindingInDex": true,
+          "registeredModuleClassInDex": true
+        },
+        "ExpoSecureStore": {
+          "nativeBindingInDex": true,
+          "registeredModuleClassInDex": true
+        }
+      },
+      "secureStoreBackupExclusions": [
+        {
+          "attribute": "fullBackupContent",
+          "resource": "res/-K.xml",
+          "excludesSecureStore": true
+        },
+        {
+          "attribute": "dataExtractionRules",
+          "resource": "res/Hq.xml",
+          "excludesSecureStore": true
+        }
+      ],
+      "cleartextTraffic": false,
+      "debuggable": false,
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.VIBRATE",
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT",
+        "com.kmab.miaa.client.preview.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+      ],
+      "bundledFontSha256": {
+        "Poppins-Regular.ttf": "707fdc5c8bab57a90061c6a8ed7b70d5ffb82fc810e994e79f90bace890c255a",
+        "NotoSansEthiopic-Regular.ttf": "321ff186e0f066a46257c3008e8a22070720350a9d17f8a32d0d3da53f52e7a2",
+        "NotoSansEthiopic-SemiBold.ttf": "03430809d926c4c048af2ef900d2a041d34894ea2d8fb13f2219b2315199938f",
+        "Poppins-SemiBold.ttf": "248c0244b350ec68880996aa6be6d7796274b49992d5fcbbefe251906aa4ea36"
+      },
+      "bundledFontLicenseNotice": true,
+      "ownedRuntimeModulesMatchingSource": 50,
+      "ownedSourceDigestSha256": "ce9174b132950770a09f46e13e82c2c16898e4ad584aa58c430829aec104bbb0",
+      "matchesFinalAndroidExportSources": true,
+      "advisoryPackagesInJavaScriptGraph": [],
+      "testFixturesInJavaScriptGraph": false,
+      "physicalDeviceTested": false,
+      "emulatorTested": false,
+      "nativeIosCompiled": false,
+      "toolchain": {
+        "jdk": "Temurin 17.0.21+9",
+        "gradle": "9.4.1",
+        "ndk": "27.1.12297006",
+        "cmake": "3.22.1",
+        "node": "24.22.1",
+        "npm": "11.9.0"
+      }
+    }
+  ]
+}

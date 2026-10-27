@@ -1,0 +1,11 @@
+{
+  "version": "0.8.0",
+  "actualGeneratedGroovyTemplateChecked": true,
+  "debugVariantRetained": true,
+  "releaseVariantUsesPrivateSigningConfig": true,
+  "transformIdempotent": true,
+  "signerFormats": ["legacy numbered signer", "Build Tools 37 versioned signer"],
+  "actualProductionKeyUsed": false,
+  "productionApkBuilt": false,
+  "credentialsPrinted": false
+}

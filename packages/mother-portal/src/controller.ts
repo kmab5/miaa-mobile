@@ -64,14 +64,17 @@ export function createMotherController(options: {
   function alive() {
     if (disposed) fault('request_aborted');
   }
-  function recordError(error: unknown) {
+  function cooldown(error: unknown) {
     if (disposed) return;
     if (error instanceof MobileApiError && error.retryAfterSeconds) {
-      const retryAt = now() + error.retryAfterSeconds * 1000;
+      const retryAt = Math.max(state.retryAt, now() + error.retryAfterSeconds * 1000);
       clearTimeout(timer);
       update({ retryAt });
       timer = setTimeout(() => update({ retryAt: 0 }), Math.max(0, retryAt - now()));
     }
+  }
+  function recordError(error: unknown) {
+    cooldown(error);
     update({ issue: error });
   }
   async function request<T>(path: string, input?: RequestOptions) {
@@ -98,7 +101,10 @@ export function createMotherController(options: {
       if (revision === revisions[key]) update({ [key]: { data, busy: false, error: null } });
       return data as MotherState[K]['data'];
     } catch (error) {
-      if (revision === revisions[key]) update({ [key]: { data: null, busy: false, error } });
+      if (revision === revisions[key]) {
+        cooldown(error);
+        update({ [key]: { data: null, busy: false, error } });
+      }
       return null;
     }
   }

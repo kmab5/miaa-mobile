@@ -1,5 +1,10 @@
 import { describe, it, expect, jest } from '@jest/globals';
-import { createMobileApi, type TokenStorage, MobileApiError } from '../packages/api/src/client';
+import {
+  createMobileApi,
+  type TokenStorage,
+  MobileApiError,
+  retryAfter,
+} from '../packages/api/src/client';
 const session = {
   accessToken: 'test-native-secret',
   tokenType: 'Bearer',
@@ -33,6 +38,73 @@ function fixture() {
 }
 const ok = (data: unknown) => Response.json({ data, requestId: 'test' });
 describe('shared native transport', () => {
+  it.each(['Infinity', '-10', '1.5', 'NaN', '', null, '0'])(
+    'bounds invalid Retry-After %s with a real cooldown',
+    (raw) => {
+      expect(retryAfter(raw, 429)).toBe(60);
+      expect(retryAfter(raw, 503)).toBeUndefined();
+    },
+  );
+  it('parses bounded integer and HTTP-date cooldowns without timer overflow', () => {
+    expect(retryAfter('9999999999999999999', 429)).toBe(86400);
+    expect(retryAfter('2', 429)).toBe(2);
+    const now = Date.parse('2026-10-26T07:30:00Z');
+    expect(retryAfter('Mon, 26 Oct 2026 07:31:00 GMT', 429, now)).toBe(60);
+    expect(retryAfter('Mon, 26 Oct 2026 07:29:00 GMT', 429, now)).toBe(60);
+  });
+  it.each([
+    null,
+    [],
+    { error: [] },
+    {
+      error: { code: {}, message: [], details: { phoneNumber: {} } },
+      requestId: { secret: 'never render objects' },
+    },
+  ])('malformed error envelope cannot escape as renderable object data: %p', async (raw) => {
+    const f = fixture();
+    await f.storage.set('old');
+    f.fetcher.mockResolvedValueOnce(Response.json(raw, { status: 429 }));
+    await expect(f.api.me()).rejects.toMatchObject({
+      status: 429,
+      code: 'http_error',
+      requestId: undefined,
+      details: undefined,
+      retryAfterSeconds: 60,
+    });
+  });
+  it('preserves valid field errors and a bounded support reference', async () => {
+    const f = fixture();
+    await f.storage.set('old');
+    f.fetcher.mockResolvedValueOnce(
+      Response.json(
+        {
+          error: {
+            code: 'invalid_input',
+            message: 'Check phone',
+            details: { phoneNumber: 'Invalid phone' },
+          },
+          requestId: 'ref-123',
+        },
+        { status: 400 },
+      ),
+    );
+    await expect(f.api.me()).rejects.toMatchObject({
+      code: 'invalid_input',
+      message: 'Check phone',
+      requestId: 'ref-123',
+      details: { phoneNumber: 'Invalid phone' },
+    });
+  });
+  it('does not call fetch for an already cancelled write', async () => {
+    const f = fixture();
+    await f.storage.set('old');
+    const ac = new AbortController();
+    ac.abort();
+    await expect(
+      f.api.request('client/orders', { method: 'POST', body: {}, signal: ac.signal }),
+    ).rejects.toMatchObject({ code: 'request_aborted' });
+    expect(f.fetcher).not.toHaveBeenCalled();
+  });
   it('saves login credentials only through the secure-storage adapter', async () => {
     const f = fixture();
     f.fetcher.mockResolvedValueOnce(ok(session));
